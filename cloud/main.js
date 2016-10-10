@@ -24,7 +24,7 @@ Parse.Cloud.define("getUsersAndTheirTags", function(request, response) {
       response.success(usersToPass);
     },
     error: function() {
-      response.error("movie lookup failed");
+      response.error("there is an error in this cloud func");
     }
   });
 });
