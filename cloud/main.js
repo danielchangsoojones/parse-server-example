@@ -31,7 +31,7 @@ Parse.Cloud.define("getUsersAndTheirTags", function(request, response) {
 
 Parse.Cloud.define("averageStars", function(request, response) {
   var query = new Parse.Query("User");
-    let userId = request.params.userIds[0];
+    let userId = request.params.userId;
   query.equalTo("objectId", userId);
   query.find({
     success: function(results) {
