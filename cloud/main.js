@@ -3,10 +3,10 @@ Parse.Cloud.define("hobo", function(request, response) {
 //  query.equalTo("userOneApproval", request.params.bool);
   query.find({ useMasterKey : true }).then(
       function(results) {
-      response.success("helllo");
+      response.success(results);
   },
     function(error) {
-        response.error("buttholllio");
+        response.error(error);
         console.log(error);
 });
 });
