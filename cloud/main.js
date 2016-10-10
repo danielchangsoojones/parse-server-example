@@ -4,5 +4,9 @@ Parse.Cloud.define("hobo", function(request, response) {
   query.find({ useMasterKey : true }).then(
       function(results) {
       response.success("helllo");
-  });
+  },
+    function(error) {
+        response.error("buttholllio");
+        console.log(error);
+});
 });
