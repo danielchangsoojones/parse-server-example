@@ -1,7 +1,7 @@
 Parse.Cloud.define("hobo", function(request, response) {
   var query = new Parse.Query("ParseSwipe");
 //  query.equalTo("userOneApproval", request.params.bool);
-  query.find({
+  query.find({ useMasterKey: true }).then({
     success: function(results) {
       response.success(results.length);
     },
