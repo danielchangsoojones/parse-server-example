@@ -3,7 +3,7 @@ Parse.Cloud.define("getUsersAndTheirTags", function(request, response) {
     var query = new Parse.Query("ParseTag");
     var tagTitles = request.params.tagTitles;
     query.containedIn("title", tagTitles);
-    query.inlude("createdBy");
+    query.include("createdBy");
   query.find({
     success: function(results) {
     //the necessaryTagCount means that a user must have this number of tags to be a chosen user, because a chosen user needs to have all searched tags.
