@@ -1,15 +1,24 @@
-Parse.Cloud.define("getUsersAndTheirTags", function(request, response) {
-    var query = new Parse.Query("ParseTag");
-    var tagTitles = request.params.tagTitles;
-    query.containedIn("title", tagTitles);
-    query.include("createdBy");
-    query.find({ useMasterKey : true }).then(
-        function(results) {
-            response.success(results);
+
+Parse.Cloud.define("saveOtherUser", function(request, response) {
+    var query = new Parse.Query(Parse.User);
+    query.equalTo("objectId", request.params.targetObjectId);
+    query.find({useMasterKey : true}).then(function(results) {
+    // process the result of the query here
+    // Save the user object
+        success: function(results) {
+            var obj = results[0];
+                obj.save(null,{
+                  success: function (object) { 
+                    response.success(object);
+                  }, 
+                error: function (object, error) { 
+                  response.error(error);
+                }
+              });
         },
-        function(error) {
-            response.error(error);
-            console.log(error);
+        error: function(error) {
+            console.log("failed");
         }
-  );
-});
+
+    });
+  });
