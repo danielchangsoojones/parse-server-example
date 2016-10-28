@@ -10,7 +10,7 @@ Parse.Cloud.define("modifyUser", function(request, response) {
   // user id instead depending on your use case.
 
   var query = new Parse.Query(Parse.User);
-  query.equalTo("objectId", request.params.targetObjectId);
+//  query.equalTo("objectId", request.params.targetObjectId);
 
   // Get the first user which matches the above constraints.
   query.first({
@@ -20,7 +20,7 @@ Parse.Cloud.define("modifyUser", function(request, response) {
       // You can use request.params to pass specific
       // keys and values you might want to change about
       // this user.
-      anotherUser.set("name", "Poopy Pajama");
+      anotherUser.set("fullName", "Poopy Pajama");
 
       // Save the user.
       anotherUser.save(null, {
