@@ -10,34 +10,34 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     var theCurrentUser = request.user;
     console.log(theCurrentUser);
     
-    var query = new Parse.Query("User");
-       query.find({
-        success: function(users) {
-            console.log("near the return of the promise results");
-            response.success(users[0]);
-        },
-        error: function(error) {
-            console.log("near the return of the promise error");
-            response.error(error);
-        }
-    });
-    
-//    getCurrentUserSwipes(theCurrentUser).then(function(swipes) {
-//        if (swipes.length > 0) {
-//            console.log("swipes are longer than 0");
-//            response.success(swipes);
-//        } else {
-//            getRandomUsers().then( function(users) {
-//                return checkIfUsersExistInParseSwipes(users, theCurrentUser);
-//            }).then( function(swipes) {
-//                response.success(swipes);
-//            }, function (error) {
-//                response.error(error);
-//            });
+//    var query = new Parse.Query("User");
+//       query.find({
+//        success: function(users) {
+//            console.log("near the return of the promise results");
+//            response.success(users[0]);
+//        },
+//        error: function(error) {
+//            console.log("near the return of the promise error");
+//            response.error(error);
 //        }
-//    }, function(error) {
-//        response.error(error);
 //    });
+    
+    getCurrentUserSwipes(theCurrentUser).then(function(swipes) {
+        if (swipes.length > 0) {
+            console.log("swipes are longer than 0");
+            response.success(swipes);
+        } else {
+            getRandomUsers().then( function(users) {
+                return checkIfUsersExistInParseSwipes(users, theCurrentUser);
+            }).then( function(swipes) {
+                response.success(swipes);
+            }, function (error) {
+                response.error(error);
+            });
+        }
+    }, function(error) {
+        response.error(error);
+    });
 });
 
 //USE THIS WHEN TESTING TO GET A CURRENT USER
