@@ -132,7 +132,6 @@ function checkIfUsersExistInParseSwipes(users, currentUser) {
     var query = new Parse.Query("ParseSwipe");
     
     console.log("in the checking parse swipes");
-    console.log(users);
     
     var usersWithExistingProfilePics = []
     
@@ -176,7 +175,6 @@ function checkIfUsersExistInParseSwipes(users, currentUser) {
                     }
                 }
             }
-            
             
             console.log(swipesToReturn);
             promise.resolve(swipesToReturn);
