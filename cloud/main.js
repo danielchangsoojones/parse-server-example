@@ -1,5 +1,9 @@
 
 //MARK: GET THE SWIPES TO START OFF THE CARD STACK
+Parse.Cloud.define('hello', function(req, res) {
+  res.success('Hi');
+});
+
 Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     console.log("doing the find Swipes func");
     
