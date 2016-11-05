@@ -6,10 +6,7 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     var theCurrentUser = Parse.User.current();
     console.log(theCurrentUser);
     
-    getATestUser().then( function(currentUser) {
-        theCurrentUser = currentUser
-        return getCurrentUserSwipes(currentUser);
-    }).then(function(swipes) {
+    getCurrentUserSwipes(theCurrentUser).then(function(swipes) {
         if (swipes.length > 0) {
             console.log("swipes are longer than 0");
             response.success(swipes);
@@ -27,24 +24,25 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     });
 });
 
-function getATestUser() {
-    var promise = new Parse.Promise();
-    console.log("running the test user query");
-    var query = new Parse.Query("User");
-    query.equalTo("username", "messyjones@gmail.com");
-    query.find({
-        success: function(users) {
-            console.log("near the return of the promise results");
-            promise.resolve(users[0]);
-        },
-        error: function(error) {
-            console.log("near the return of the promise error");
-            promise.reject(error);
-        }
-    });
-    
-    return promise;
-}
+//USE THIS WHEN TESTING TO GET A CURRENT USER
+//function getATestUser() {
+//    var promise = new Parse.Promise();
+//    console.log("running the test user query");
+//    var query = new Parse.Query("User");
+//    query.equalTo("username", "messyjones@gmail.com");
+//    query.find({
+//        success: function(users) {
+//            console.log("near the return of the promise results");
+//            promise.resolve(users[0]);
+//        },
+//        error: function(error) {
+//            console.log("near the return of the promise error");
+//            promise.reject(error);
+//        }
+//    });
+//    
+//    return promise;
+//}
 
 function getCurrentUserSwipes(currentUser) {
     console.log("in the getCurrentUserSwipes");
@@ -86,10 +84,6 @@ function getCurrentUserSwipes(currentUser) {
     return promise;
 }
 
-function getNewUserSwipes() {
-    
-};
-
 function randomDate() {
     //the dates for the months are 1 behind, so October is actually the 9th month
     var firstUserCreatedDate = new Date(2016, 9, 20, 0, 0, 0);
@@ -121,6 +115,7 @@ function getRandomUsers() {
     
     query.find({
         success: function(users) {
+            console.log("in the random user function");
             console.log(users);
             promise.resolve(users);
         },
@@ -181,8 +176,10 @@ function checkIfUsersExistInParseSwipes(users, currentUser) {
                     }
                 }
             }
-            console.log(swipes);
-            promise.resolve(swipes);
+            
+            
+            console.log(swipesToReturn);
+            promise.resolve(swipesToReturn);
         },
         error: function(error) {
             console.log(error);
