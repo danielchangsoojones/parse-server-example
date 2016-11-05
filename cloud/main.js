@@ -7,7 +7,7 @@ Parse.Cloud.define('hello', function(req, res) {
 Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     console.log("doing the find Swipes func");
     
-    var theCurrentUser = Parse.User.current();
+    var theCurrentUser = request.user;
     console.log(theCurrentUser);
     
     getCurrentUserSwipes(theCurrentUser).then(function(swipes) {
