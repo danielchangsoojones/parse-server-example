@@ -4,10 +4,10 @@
 Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     console.log("doing the find Swipes func");
     
-    var theCurrentUser = request.user;
-    console.log(theCurrentUser);
+//    var theCurrentUser = request.user;
+//    console.log(theCurrentUser);
     
-//    getATestUser().then( function(theCurrentUser) {
+    getATestUser().then( function(theCurrentUser) {
         
         
         getCurrentUserSwipes(theCurrentUser).then(function(swipes) {
@@ -33,7 +33,7 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
         
         
 
-//    });
+    });
     
         
         
@@ -164,12 +164,12 @@ function getNewSwipes(alreadySwipedUserObjectIds, currentUser) {
 function createNewSwipe(otherUser, currentUser) {
     var TheNewSwipe = Parse.Object.extend("ParseSwipe");
     var newSwipe = new TheNewSwipe();
-    newSwipe.userOne = currentUser;
-    newSwipe.userTwo = otherUser;
-    newSwipe.userOneApproval = false;
-    newSwipe.userTwoApproval = false;
-    newSwipe.hasUserOneSwiped = false;
-    newSwipe.hasUserTwoSwiped = false;
+    newSwipe.set("userOne", currentUser);
+    newSwipe.set("userTwo", otherUser);
+    newSwipe.set("userOneApproval", false);
+    newSwipe.set("userTwoApproval", false);
+    newSwipe.set("hasUserOneSwiped", false);
+    newSwipe.set("hasUserTwoSwiped", false);
     return newSwipe
 }
 
