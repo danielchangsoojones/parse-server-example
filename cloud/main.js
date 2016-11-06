@@ -21,7 +21,9 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
             getAlreadySwipedUserObjectIds(theCurrentUser).then( function(userObjectIds) {
                 getNewSwipes(userObjectIds, theCurrentUser).then( function(newSwipes) {
                     swipes.push.apply(swipes, newSwipes);
-                    response.success(swipes);
+                    
+                    var nonDuplicateSwipes = getRidOfDuplicates(swipes, theCurrentUser);
+                    response.success(nonDuplicateSwipes);
                 }, function(error) {
                     response.error(error);
                 });
@@ -41,21 +43,26 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
 });
 
 function getRidOfDuplicates(swipes, currentUser) {
-    var alreadyUsedUsers = [];
+    var alreadyUsedUserObjectIds = [];
     console.log(swipes);
     
     console.log("getting rid of duplicates")
     
     for (var i = 0; i < swipes.length; i++) {
         var swipe = swipes[i];
-        if (alreadyUsedUsers.indexOf(swipe.userOne) > -1 && alreadyUsedUsers.indexOf(swipe.userTwo) > -1) {
-            swipe.destroy();
+        if (alreadyUsedUserObjectIds.indexOf(swipe.get("userOne").id) > -1 && alreadyUsedUserObjectIds.indexOf(swipe.get("userTwo").id) > -1) {
+            console.log("the user is getting deleted");
             swipes.splice(i, 1);
+            swipe.destroy();
+
         } else {
-            alreadyUsedUsers.push(swipe.userOne);
-            alreadyUsedUsers.push(swipe.userTwo);
+            //we add the current user a bunch to this array because it doesn't matter if the currentUser gets added twice. 
+            alreadyUsedUserObjectIds.push(swipe.get("userOne").id);
+            alreadyUsedUserObjectIds.push(swipe.get("userTwo").id);
         }
     }
+    
+    console.log(alreadyUsedUserObjectIds);
     
     return swipes
 }
@@ -122,7 +129,7 @@ function getCurrentUserSwipes(currentUser) {
 //TODO: don't let the currentUser be in the search
 function getNewSwipes(alreadySwipedUserObjectIds, currentUser) {
     //don't want the user to search themselves
-    alreadySwipedUserObjectIds.push(currentUser.objectId);
+    alreadySwipedUserObjectIds.push(currentUser.id);
     
     var query = new Parse.Query("User");
     query.exists("profileImage");
@@ -140,7 +147,6 @@ function getNewSwipes(alreadySwipedUserObjectIds, currentUser) {
             
             console.log("about to create a bunch of new swipes");
             console.log(newSwipes);
-//            promise.resolve(newSwipes);
             
             Parse.Object.saveAll(newSwipes, {
                 success: function(savedSwipes) {
@@ -197,10 +203,10 @@ function getAlreadySwipedUserObjectIds(currentUser) {
             for (var i = 0; i < swipes.length; i++) {
                 //append the otherUser to theUsers array
                 var swipe = swipes[i];
-                if (currentUser == swipe.userTwo) {
-                    theAlreadySwipedUserObjectIds.push(swipe.userTwo.objectId);
-                } else if (currentUser == swipe.userOne) {
-                    theAlreadySwipedUserObjectIds.push(swipe.userOne.objectId);
+                if (currentUser.id == swipe.get("userTwo").id) {
+                    theAlreadySwipedUserObjectIds.push(swipe.get("userOne").id);
+                } else if (currentUser.id == swipe.get("userOne").id) {
+                    theAlreadySwipedUserObjectIds.push(swipe.get("userTwo").id);
                 }
             }
             
