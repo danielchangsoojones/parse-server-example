@@ -4,10 +4,10 @@
 Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     console.log("doing the find Swipes func");
     
-    var theCurrentUser = request.user;
-    console.log(theCurrentUser);
+//    var theCurrentUser = request.user;
+//    console.log(theCurrentUser);
     
-    getATestUser().then( function(theCurrentUser) {
+//    getATestUser().then( function(theCurrentUser) {
         
         
         getCurrentUserSwipes(theCurrentUser).then(function(swipes) {
@@ -30,7 +30,7 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
         response.error(error);
     });
 
-    });
+//    });
     
         
         
@@ -135,8 +135,15 @@ function getNewSwipes(alreadySwipedUserObjectIds, currentUser) {
             for (var i = 0; i < users.length; i++) {
                 newSwipes.push(createNewSwipe(users));
             }
-            console.log(newSwipes);
-            promise.resolve(newSwipes);
+            
+            Parse.Object.saveAll(newSwipes, {
+                success: function(savedSwipes) {
+                    promise.resolve(savedSwipes);
+                }, 
+                error: function(error) {
+                    promise.reject(error);
+                }
+            });
         },
         error: function(error) {
             console.log(error);
