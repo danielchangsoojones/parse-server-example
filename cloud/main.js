@@ -16,7 +16,7 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
         response.success(swipes);
     }, function(error) {
         response.error(error);
-//    });
+    });
         
         
 
@@ -26,6 +26,8 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
         
     
 });
+    
+
     
     
 
