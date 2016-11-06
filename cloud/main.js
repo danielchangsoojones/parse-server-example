@@ -10,7 +10,8 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     var theCurrentUser = request.user;
     console.log(theCurrentUser);
     
-    getCurrentUserSwipes(theCurrentUser).then(function(swipes) {
+        
+        getCurrentUserSwipes(theCurrentUser).then(function(swipes) {
         if (swipes.length > 0) {
             console.log("swipes are longer than 0");
             var nonDuplicateSwipes = getRidOfDuplicates(swipes, theCurrentUser);
@@ -28,18 +29,19 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     }, function(error) {
         response.error(error);
     });
+    
 });
 
 function getRidOfDuplicates(swipes, currentUser) {
-    var alreadyUsedUsers = []
+    var alreadyUsedUsers = [];
     
     console.log("getting rid of duplicates")
     
     for (var i = 0; i < swipes.length; i++) {
         var swipe = swipes[i];
-        if (alreadyUsedUsers.contains(swipe.userOne) && alreadyUsedUsers.contains(swipe.userTwo)) {
+        if (alreadyUsedUsers.indexOf(swipe.userOne) > -1 && alreadyUsedUsers.indexOf(swipe.userTwo) > -1) {
             swipe.destroy();
-            swipe.splice(i, 1);
+            swipes.splice(i, 1);
         } else {
             alreadyUsedUsers.push(swipe.userOne);
             alreadyUsedUsers.push(swipe.userTwo);
