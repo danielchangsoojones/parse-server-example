@@ -13,7 +13,8 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     getCurrentUserSwipes(theCurrentUser).then(function(swipes) {
         if (swipes.length > 0) {
             console.log("swipes are longer than 0");
-            response.success(swipes);
+            var nonDuplicateSwipes = getRidOfDuplicates(swipes, theCurrentUser);
+            response.success(nonDuplicateSwipes);
         } else {
             getRandomUsers().then( function(users) {
                 return checkIfUsersExistInParseSwipes(users, theCurrentUser);
@@ -32,15 +33,20 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
 function getRidOfDuplicates(swipes, currentUser) {
     var alreadyUsedUsers = []
     
+    console.log("getting rid of duplicates")
+    
     for (var i = 0; i < swipes.length; i++) {
         var swipe = swipes[i];
         if (alreadyUsedUsers.contains(swipe.userOne) && alreadyUsedUsers.contains(swipe.userTwo)) {
             swipe.destroy();
+            swipe.splice(i, 1);
         } else {
             alreadyUsedUsers.push(swipe.userOne);
             alreadyUsedUsers.push(swipe.userTwo);
         }
     }
+    
+    return swipes
 }
 
 //USE THIS WHEN TESTING TO GET A CURRENT USER
