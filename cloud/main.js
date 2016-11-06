@@ -17,6 +17,7 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
             response.success(nonDuplicateSwipes);
         } else {
             //If the swipes is less than 25, then we want to get some new swipes to add to the swipe array, jstu to give the user something to do.
+            console.log("Swipes are less than 0");
             getAlreadySwipedUserObjectIds(theCurrentUser).then( function(userObjectIds) {
                 getNewSwipes(userObjectIds, theCurrentUser).then( function(newSwipes) {
                     swipes.push.apply(swipes, newSwipes);
@@ -29,6 +30,8 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     }, function(error) {
         response.error(error);
     });
+        
+        
 
 //    });
     
@@ -62,7 +65,7 @@ function getATestUser() {
     var promise = new Parse.Promise();
     console.log("running the test user query");
     var query = new Parse.Query("User");
-    query.equalTo("username", "messyjones@gmail.com");
+    query.equalTo("username", "irkGZKWE9PZ5flIjiM2OQODq7");
     query.find({
         success: function(users) {
             console.log("near the return of the promise results");
@@ -79,7 +82,6 @@ function getATestUser() {
 
 function getCurrentUserSwipes(currentUser) {
     console.log("in the getCurrentUserSwipes");
-    console.log(currentUser);
     
     //make sure that the other user has a profile image
     var profileImageExistsQuery = new Parse.Query("User");
@@ -136,14 +138,18 @@ function getNewSwipes(alreadySwipedUserObjectIds, currentUser) {
                 newSwipes.push(createNewSwipe(users));
             }
             
-            Parse.Object.saveAll(newSwipes, {
-                success: function(savedSwipes) {
-                    promise.resolve(savedSwipes);
-                }, 
-                error: function(error) {
-                    promise.reject(error);
-                }
-            });
+            console.log("about to create a bunch of new swipes");
+//            promise.resolve(newSwipes);
+            
+//            Parse.Object.saveAll(newSwipes, {
+//                success: function(savedSwipes) {
+//                    console.log("everything got saved");
+//                    promise.resolve(savedSwipes);
+//                }, 
+//                error: function(error) {
+//                    promise.reject(error);
+//                }
+//            });
         },
         error: function(error) {
             console.log(error);
@@ -155,7 +161,8 @@ function getNewSwipes(alreadySwipedUserObjectIds, currentUser) {
 }
 
 function createNewSwipe(otherUser, currentUser) {
-    var newSwipe = Parse.Object.extend("ParseSwipe");
+    var TheNewSwipe = Parse.Object.extend("ParseSwipe");
+    var newSwipe = new TheNewSwipe();
     newSwipe.userOne = currentUser;
     newSwipe.userTwo = otherUser;
     newSwipe.userOneApproval = false;
