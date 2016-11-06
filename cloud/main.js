@@ -135,7 +135,7 @@ function getNewSwipes(alreadySwipedUserObjectIds, currentUser) {
             var newSwipes = []
             
             for (var i = 0; i < users.length; i++) {
-                newSwipes.push(createNewSwipe(users));
+                newSwipes.push(createNewSwipe(users[i], currentUser));
             }
             
             console.log("about to create a bunch of new swipes");
