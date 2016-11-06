@@ -10,6 +10,8 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     var theCurrentUser = request.user;
     console.log(theCurrentUser);
     
+//    getATestUser().then( function(theCurrentUser) {
+        
         
         getCurrentUserSwipes(theCurrentUser).then(function(swipes) {
         if (swipes.length > 0) {
@@ -29,11 +31,17 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     }, function(error) {
         response.error(error);
     });
+
+//    });
+    
+        
+        
     
 });
 
 function getRidOfDuplicates(swipes, currentUser) {
     var alreadyUsedUsers = [];
+    console.log(swipes);
     
     console.log("getting rid of duplicates")
     
@@ -52,24 +60,24 @@ function getRidOfDuplicates(swipes, currentUser) {
 }
 
 //USE THIS WHEN TESTING TO GET A CURRENT USER
-//function getATestUser() {
-//    var promise = new Parse.Promise();
-//    console.log("running the test user query");
-//    var query = new Parse.Query("User");
-//    query.equalTo("username", "messyjones@gmail.com");
-//    query.find({
-//        success: function(users) {
-//            console.log("near the return of the promise results");
-//            promise.resolve(users[0]);
-//        },
-//        error: function(error) {
-//            console.log("near the return of the promise error");
-//            promise.reject(error);
-//        }
-//    });
-//    
-//    return promise;
-//}
+function getATestUser() {
+    var promise = new Parse.Promise();
+    console.log("running the test user query");
+    var query = new Parse.Query("User");
+    query.equalTo("username", "messyjones@gmail.com");
+    query.find({
+        success: function(users) {
+            console.log("near the return of the promise results");
+            promise.resolve(users[0]);
+        },
+        error: function(error) {
+            console.log("near the return of the promise error");
+            promise.reject(error);
+        }
+    });
+    
+    return promise;
+}
 
 function getCurrentUserSwipes(currentUser) {
     console.log("in the getCurrentUserSwipes");
