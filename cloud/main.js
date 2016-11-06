@@ -139,7 +139,7 @@ function getNewSwipes(alreadySwipedUserObjectIds, currentUser) {
             }
             
             console.log("about to create a bunch of new swipes");
-//            promise.resolve(newSwipes);
+            promise.resolve(newSwipes);
             
 //            Parse.Object.saveAll(newSwipes, {
 //                success: function(savedSwipes) {
