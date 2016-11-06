@@ -44,7 +44,8 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
 
 function getRidOfDuplicates(swipes, currentUser) {
     var alreadyUsedUserObjectIds = [];
-    console.log(swipes);
+    //just make sure that the currentUser doesn't get themselves, this is a safegaurd. 
+    alreadyUsedUserObjectIds.push(currentUser.id);
     
     console.log("getting rid of duplicates")
     
