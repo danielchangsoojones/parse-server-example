@@ -1,8 +1,5 @@
 
 //MARK: GET THE SWIPES TO START OFF THE CARD STACK
-Parse.Cloud.define('hello', function(req, res) {
-  res.success('Hi');
-});
 
 Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     console.log("doing the find Swipes func");
@@ -10,29 +7,30 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     var theCurrentUser = request.user;
     console.log(theCurrentUser);
     
-//    getATestUser().then( function(theCurrentUser) {
+    getATestUser().then( function(theCurrentUser) {
         
         
         getCurrentUserSwipes(theCurrentUser).then(function(swipes) {
-        if (swipes.length > 0) {
+        if (swipes.length > 25) {
             console.log("swipes are longer than 0");
             var nonDuplicateSwipes = getRidOfDuplicates(swipes, theCurrentUser);
             response.success(nonDuplicateSwipes);
         } else {
-            getRandomUsers().then( function(users) {
-                return checkIfUsersExistInParseSwipes(users, theCurrentUser);
-            }).then( function(swipes) {
-                var nonDuplicateSwipes = getRidOfDuplicates(swipes, theCurrentUser);
-                response.success(nonDuplicateSwipes);
-            }, function (error) {
-                response.error(error);
+            //If the swipes is less than 25, then we want to get some new swipes to add to the swipe array, jstu to give the user something to do.
+            getAlreadySwipedUserObjectIds(theCurrentUser).then( function(userObjectIds) {
+                getNewSwipes(userObjectIds, theCurrentUser).then( function(newSwipes) {
+                    swipes.push.apply(swipes, newSwipes);
+                    response.success(swipes);
+                }, function(error) {
+                    response.error(error);
+                });
             });
         }
     }, function(error) {
         response.error(error);
     });
 
-//    });
+    });
     
         
         
@@ -119,100 +117,26 @@ function getCurrentUserSwipes(currentUser) {
     return promise;
 }
 
-function randomDate() {
-    //the dates for the months are 1 behind, so October is actually the 9th month
-    var firstUserCreatedDate = new Date(2016, 9, 20, 0, 0, 0);
-    var now = Date.now();
-  var date = new Date(+firstUserCreatedDate + Math.random() * (now - firstUserCreatedDate));
-  return date;
-}
-
-function addDays(date, days) {
-    var result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-}
-
-//we want a randomUser because there really isn't a very effecient way to get all the users who haven't been used in a swipe. We are better off just getting a number of random users, and checking if they exist already in the parseSwipes.
-function getRandomUsers() {
+//TODO: don't let the currentUser be in the search
+function getNewSwipes(alreadySwipedUserObjectIds, currentUser) {
+    //don't want the user to search themselves
+    alreadySwipedUserObjectIds.push(currentUser.objectId);
+    
     var query = new Parse.Query("User");
-    
-    //the best way to get random users is too just look at when the user was last updated, which changes randomly as users use the app, and then just get a random date block between the start of the database and now. It's not perfectly random, but it's functionally random enough. 
-    var theRandomDate = randomDate();
-    var numberOfDaysBetween = 10
-    query.greaterThan("updatedAt", addDays(theRandomDate, -numberOfDaysBetween));
-    query.lessThan("updatedAt", theRandomDate);
-    query.limit(50);
-    
     query.exists("profileImage");
+    query.notContainedIn("objectId", alreadySwipedUserObjectIds);
     
     var promise = new Parse.Promise();
     
     query.find({
         success: function(users) {
-            console.log("in the random user function");
-            console.log(users);
-            promise.resolve(users);
-        },
-        error: function(error) {
-            console.log(error);
-            promise.reject(error);
-        }
-    });
-    
-    return promise;
-}
-
-function checkIfUsersExistInParseSwipes(users, currentUser) {
-    var query = new Parse.Query("ParseSwipe");
-    
-    console.log("in the checking parse swipes");
-    
-    var usersWithExistingProfilePics = []
-    
-    for (var i = 0; i < users.length; i++) {
-        //if the profileImage is undefined, that means it exists. If null, it doesn't exist. 
-        var user = users[i];
-        if (user.profileImage !== null) {
-            usersWithExistingProfilePics.push(user);
-        }
-    }
-    
-    console.log(usersWithExistingProfilePics);
-    
-    //find any parseSwipes where the user is either userOne or userTwo
-    var currentUserIsUserOneQuery = new Parse.Query("ParseSwipe");
-    currentUserIsUserOneQuery.equalTo("userOne", currentUser);
-    currentUserIsUserOneQuery.containedIn("userTwo", usersWithExistingProfilePics);
-    
-    var currentUserIsUserTwoQuery = new Parse.Query("ParseSwipe");
-    currentUserIsUserTwoQuery.equalTo("userTwo", currentUser);
-    currentUserIsUserTwoQuery.containedIn("userOne", usersWithExistingProfilePics);
-    
-    var orQuery = Parse.Query.or(currentUserIsUserOneQuery, currentUserIsUserTwoQuery);
-    orQuery.include("userOne");
-    orQuery.include("userTwo");
-    
-    var promise = new Parse.Promise();
-     orQuery.find({
-        success: function(swipes) {
-            var swipesToReturn = []
+            var newSwipes = []
             
-            for (var swipe in swipes) {
-                for (var i = 0; i < usersWithExistingProfilePics.length; i++) {
-                    var user = usersWithExistingProfilePics[i];
-                    if (user == swipe.userOne || user == swipe.userTwo) {
-                        //the user already exists in a swipe with the current user, so remove them from the array to return.
-                        usersWithExistingProfilePics.splice(i, 1);
-                    } else {
-                        //we want to create a new swipe to be sent to the user
-                        swipesToReturn.push(createNewSwipe());
-                    }
-                }
+            for (var i = 0; i < users.length; i++) {
+                newSwipes.push(createNewSwipe(users));
             }
-            
-            console.log(swipesToReturn);
-            promise.resolve(swipesToReturn);
+            console.log(newSwipes);
+            promise.resolve(newSwipes);
         },
         error: function(error) {
             console.log(error);
@@ -224,7 +148,7 @@ function checkIfUsersExistInParseSwipes(users, currentUser) {
 }
 
 function createNewSwipe(otherUser, currentUser) {
-    var newSwipe = new ParseSwipe();
+    var newSwipe = Parse.Object.extend("ParseSwipe");
     newSwipe.userOne = currentUser;
     newSwipe.userTwo = otherUser;
     newSwipe.userOneApproval = false;
@@ -232,4 +156,47 @@ function createNewSwipe(otherUser, currentUser) {
     newSwipe.hasUserOneSwiped = false;
     newSwipe.hasUserTwoSwiped = false;
     return newSwipe
+}
+
+//TODO: this is not a scalable solution to check how to get new users in the database, but for now, we want to just find the new users that the user hasn't swiped. 
+function getAlreadySwipedUserObjectIds(currentUser) {
+    //This query finds all the current user's swipes and then returns the otherUser's on the swipes. Then, we can use those users to say find all users who are not these users. 
+    var query = new Parse.Query("ParseSwipe");
+    
+    var currentUserIsUserOneQuery = new Parse.Query("ParseSwipe");
+    currentUserIsUserOneQuery.equalTo("userOne", currentUser);
+    
+    var currentUserIsUserTwoQuery = new Parse.Query("ParseSwipe");
+    currentUserIsUserTwoQuery.equalTo("userTwo", currentUser);
+    
+    var orQuery = Parse.Query.or(currentUserIsUserOneQuery, currentUserIsUserTwoQuery);
+    orQuery.include("userOne");
+    orQuery.include("userTwo");
+    
+    var promise = new Parse.Promise();
+    
+    orQuery.find({
+        success: function(swipes) {
+            var theAlreadySwipedUserObjectIds = []
+    
+            for (var i = 0; i < swipes.length; i++) {
+                //append the otherUser to theUsers array
+                var swipe = swipes[i];
+                if (currentUser == swipe.userTwo) {
+                    theAlreadySwipedUserObjectIds.push(swipe.userTwo.objectId);
+                } else if (currentUser == swipe.userOne) {
+                    theAlreadySwipedUserObjectIds.push(swipe.userOne.objectId);
+                }
+            }
+            
+            console.log(theAlreadySwipedUserObjectIds);
+            promise.resolve(theAlreadySwipedUserObjectIds);
+        },
+        error: function(error) {
+            console.log(error);
+            promise.reject(error);
+        }
+    });
+    
+    return promise;
 }
