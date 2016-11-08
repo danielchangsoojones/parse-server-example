@@ -174,11 +174,18 @@ function getAlreadySwipedUserObjectIds(currentUser) {
             for (var i = 0; i < swipes.length; i++) {
                 //append the otherUser to theUsers array
                 var swipe = swipes[i];
-                if (currentUser.id == swipe.get("userTwo").id) {
-                    theAlreadySwipedUserObjectIds.push(swipe.get("userOne").id);
-                } else if (currentUser.id == swipe.get("userOne").id) {
-                    theAlreadySwipedUserObjectIds.push(swipe.get("userTwo").id);
+                var userOne = swipe.get("userOne");
+                var userTwo = swipe.get("userTwo");
+                
+                //we must make sure the users are not null because if a user ever gets deleted, then the pointer would be null, and that would break the function. But, this fixes it by checking to make sure the data is okay
+                if (userOne != null && userTwo != null) {
+                    if (currentUser.id == userTwo.id) {
+                        theAlreadySwipedUserObjectIds.push(userOne.id);
+                    } else if (currentUser.id == userOne.id) {
+                        theAlreadySwipedUserObjectIds.push(userTwo.id);
+                    }
                 }
+                
             }
             
             console.log(theAlreadySwipedUserObjectIds);
