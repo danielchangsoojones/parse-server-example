@@ -1,7 +1,13 @@
 //test keys
 //change these with your app keys
-var appId = "djflkajsdlfjienrj3457698";
-var javaScriptKey = "ajdkdkfld6354758";
+
+//MARK: PRODUCTION DATABASE
+var appId = "shuffle12890432EJLDIFJEKhdhd";
+var javaScriptKey = "shuffle21319808432940LKJLSJD";
+
+//MARK: DEVELOPMENT DATABASE
+//var appId = "djflkajsdlfjienrj3457698";
+//var javaScriptKey = "ajdkdkfld6354758";
 
 //local module
 global.Parse = require("/Users/danieljones/parse-server-example/node_modules/parse-cloud-debugger").Parse;
@@ -11,7 +17,13 @@ global.Parse = require("/Users/danieljones/parse-server-example/node_modules/par
 
 //init parse modules
 Parse.initialize(appId, javaScriptKey);
-Parse.serverURL = "https://chachatinder.herokuapp.com/parse"
+
+
+//MARK: PRODUCTION SERVERURL
+Parse.serverURL = "http://shuffles-production.herokuapp.com/parse"
+
+//MARK: DEVELOPMENT SERVERURL
+//Parse.serverURL = "https://chachatinder.herokuapp.com/parse"
 
 process.nextTick(function () {
    //run cloud code

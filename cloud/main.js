@@ -4,12 +4,12 @@
 Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     console.log("doing the find Swipes func");
     
-    var theCurrentUser = request.user;
-    console.log(theCurrentUser);
+//    var theCurrentUser = request.user;
+//    console.log(theCurrentUser);
     
     var swipeRepository = require("./swipes.js");
     
-//    getATestUser().then( function(theCurrentUser) {
+    getATestUser().then( function(theCurrentUser) {
         
     
         swipeRepository.findSwipesForCurrentUser(theCurrentUser).then( function(swipes) {
@@ -20,7 +20,7 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
         
         
 
-//    });
+    });
     
         
         
@@ -37,7 +37,7 @@ function getATestUser() {
     var promise = new Parse.Promise();
     console.log("running the test user query");
     var query = new Parse.Query("User");
-    query.equalTo("username", "irkGZKWE9PZ5flIjiM2OQODq7");
+    query.equalTo("username", "messyjones@gmail.com");
     query.find({
         success: function(users) {
             console.log("near the return of the promise results");
