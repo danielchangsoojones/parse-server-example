@@ -27,11 +27,6 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     
 });
     
-
-    
-    
-
-
 //USE THIS WHEN TESTING TO GET A CURRENT USER
 function getATestUser() {
     var promise = new Parse.Promise();
@@ -51,3 +46,40 @@ function getATestUser() {
     
     return promise;
 }
+
+
+//Jobs
+Parse.Cloud.job("copyUsernamesToEmail", function(request, status) {
+var query = new Parse.Query(Parse.User);
+
+  // Update the Job status message
+ console.log("I just started");
+    
+    query.find({useMasterKey: true}).then(function(users) {
+        
+        var usersToUpdate = []
+            for (var i = 0; i < user.count; i++) {
+                var user = users[i];
+                var email = user.get("email");
+                if (email == null) {
+                    user.set("email", user.get("username"));
+                    usersToUpdate.push(user);
+                }
+            }
+            Parse.Object.saveAll(usersToUpdate, {
+            success: function(objs) {
+            // objects have been saved...
+                console.log("the job was a success");
+            },
+            error: function(error) { 
+            // an error occurred...
+                console.log(error);
+            }
+        });
+        
+        
+    }, function(error) {
+        console.log(error);
+    });
+
+});

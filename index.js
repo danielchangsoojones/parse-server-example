@@ -31,7 +31,7 @@ preventLoginWithUnverifiedEmail: false, // defaults to false
 
 publicServerURL: 'https://chachatinder.herokuapp.com/parse',
  // Your apps name. This will appear in the subject and body of the emails that are sent.
-appName: 'ShuffleHunt Email Testing',
+appName: 'ShuffleHunt',
 
 // The email adapter
 emailAdapter: {
