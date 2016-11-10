@@ -17,13 +17,13 @@ var api = new ParseServer({
   appId: process.env.APP_ID || 'myAppId',
     
     //MARK: Production Database
-    masterKey: process.env.MASTER_KEY || 'shuffle21319808432940LKJLSJD', //Add your master key here. Keep it secret!
-  serverURL: process.env.SERVER_URL || 'http://shuffles-production.herokuapp.com/parse',  // Don't forget to change to https if needed
+//    masterKey: process.env.MASTER_KEY || 'shuffle21319808432940LKJLSJD', //Add your master key here. Keep it secret!
+//  serverURL: process.env.SERVER_URL || 'http://shuffles-production.herokuapp.com/parse',  // Don't forget to change to https if needed
     
     
     //MARK: Development Database
-//    masterKey: process.env.MASTER_KEY || 'ajdkdkfld6354758', //Add your master key here. Keep it secret!
-//  serverURL: process.env.SERVER_URL || 'https://chachatinder.herokuapp.com/parse',  // Don't forget to change to https if needed
+    masterKey: process.env.MASTER_KEY || 'ajdkdkfld6354758', //Add your master key here. Keep it secret!
+  serverURL: process.env.SERVER_URL || 'https://chachatinder.herokuapp.com/parse',  // Don't forget to change to https if needed
     
   liveQuery: {
     classNames: ['Chat'] // List of classes to support for query subscriptions
