@@ -23,14 +23,8 @@ var api = new ParseServer({
     
     //MARK: Development Database
     masterKey: process.env.MASTER_KEY || 'ajdkdkfld6354758', //Add your master key here. Keep it secret!
-  serverURL: process.env.SERVER_URL || 'https://chachatinder.herokuapp.com/parse',  // Don't forget to change to https if needed
-    
-  liveQuery: {
-    classNames: ['Chat'] // List of classes to support for query subscriptions
-  }
-    
-    
-    // here the configuration for email begins
+  serverURL: process.env.SERVER_URL || 'https://chachatinder.herokuapp.com/parse', // Don't forget to change to https if needed
+        // here the configuration for email begins
 verifyUserEmails: false,  //depends on your needs, you can set it to false 
 emailVerifyTokenValidityDuration: 2 * 60 * 60, // in seconds (2 hours = 7200 seconds)
 preventLoginWithUnverifiedEmail: false, // defaults to false
@@ -50,6 +44,10 @@ options: {
   // Your API key from mailgun.com
   apiKey: 'key-058644e2f351a81f92faafdf7bbcd12f',
     }
+  },
+    
+  liveQuery: {
+    classNames: ['Chat'] // List of classes to support for query subscriptions
   }
 });
 
