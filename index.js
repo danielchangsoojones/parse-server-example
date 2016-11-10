@@ -28,6 +28,29 @@ var api = new ParseServer({
   liveQuery: {
     classNames: ['Chat'] // List of classes to support for query subscriptions
   }
+    
+    
+    // here the configuration for email begins
+verifyUserEmails: false,  //depends on your needs, you can set it to false 
+emailVerifyTokenValidityDuration: 2 * 60 * 60, // in seconds (2 hours = 7200 seconds)
+preventLoginWithUnverifiedEmail: false, // defaults to false
+
+publicServerURL: 'https://chachatinder.herokuapp.com/parse',
+ // Your apps name. This will appear in the subject and body of the emails that are sent.
+appName: 'ShuffleHunt Email Testing',
+
+// The email adapter
+emailAdapter: {
+module: 'parse-server-simple-mailgun-adapter',
+options: {
+  // The address that your emails come from
+  fromAddress: 'shufflehunt@shufflehunt.com',
+  // Your domain from mailgun.com
+  domain: 'sandboxe1a767d87d5046e58bddddb6c2985382.mailgun.org',
+  // Your API key from mailgun.com
+  apiKey: 'key-058644e2f351a81f92faafdf7bbcd12f',
+    }
+  }
 });
 
 // Client-keys like the javascript key or the .NET key are not necessary with parse-server
