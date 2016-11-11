@@ -40,7 +40,5 @@ process.nextTick(function () {
 //                        console.log(error);
 //                    }
 //    });
-    
-        Parse.Cloud.runJob("copyUsernamesToEmail");
 
 });
