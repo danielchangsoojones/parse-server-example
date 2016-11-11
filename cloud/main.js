@@ -47,13 +47,7 @@ var query = new Parse.Query(Parse.User);
                     usersToUpdate.push(user);
                 }
                 //This works, to let me update other users and access their security, but I have no idea how to check for errors...
-                Parse.Object.saveAll(usersToUpdate, { useMasterKey: true }).then( function(result) {
-                    console.log(result);
-                }, function(error) {
-                    console.log(error);
-                });
-                
-//                user.save(null, {useMasterKey:true});
+                user.save(null, {useMasterKey:true});
             }
     }, function(error) {
         console.log(error);
