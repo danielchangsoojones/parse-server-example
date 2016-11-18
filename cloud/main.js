@@ -47,7 +47,7 @@ function getATestUser() {
     
     return promise;
 }
-=======
+
 //Jobs
 Parse.Cloud.job("copyUsernamesToEmail", function(request, status) {
 var query = new Parse.Query(Parse.User);
@@ -83,4 +83,4 @@ var query = new Parse.Query(Parse.User);
     });
 
 });
->>>>>>> 494c253b75e422136c85f65f1dc4ac8319b25ac0
+
