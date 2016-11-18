@@ -62,21 +62,32 @@ function getCurrentUserSwipes(currentUser) {
     console.log("in the getCurrentUserSwipes");
     
     //make sure that the other user has a profile image
-    var profileImageExistsQuery = new Parse.Query("User");
-    profileImageExistsQuery.exists("profileImage");
+    var innerOtherUserQuery = new Parse.Query("User");
+    innerOtherUserQuery.exists("profileImage");
+    if (shouldCheckInterestedIn(currentUser)) {
+        console.log("in the should check interested in query");
+        console.log(currentUser.get("interestedIn"));
+        innerOtherUserQuery.equalTo("gender", currentUser.get("interestedIn"));
+    }
     
     //find any parseSwipes where the user is either userOne or userTwo
-    var currentUserIsUserOneQuery = new Parse.Query("ParseSwipe");
-    currentUserIsUserOneQuery.equalTo("userOne", currentUser);
+    var currentUserIsUserOneQuery = createCurrentUserIsUserOneQuery(currentUser);
     currentUserIsUserOneQuery.equalTo("hasUserOneSwiped", false);
-    currentUserIsUserOneQuery.matchesQuery("userTwo", profileImageExistsQuery);
+    currentUserIsUserOneQuery.matchesQuery("userTwo", innerOtherUserQuery);
     
-    var currentUserIsUserTwoQuery = new Parse.Query("ParseSwipe");
-    currentUserIsUserTwoQuery.equalTo("userTwo", currentUser);
+    var currentUserIsUserTwoQuery = createCurrentUserIsUserTwoQuery(currentUser);
     currentUserIsUserTwoQuery.equalTo("hasUserTwoSwiped", false);
-    currentUserIsUserTwoQuery.matchesQuery("userOne", profileImageExistsQuery);
+    currentUserIsUserTwoQuery.matchesQuery("userOne", innerOtherUserQuery);
     
-    var orQuery = Parse.Query.or(currentUserIsUserOneQuery, currentUserIsUserTwoQuery);
+    //add any parseswipes with a message included
+    //they don't need to be in the user's interested in parameter, anyone can send a message to anyone.
+    var currentUserOneMessageQuery = createCurrentUserIsUserOneQuery(currentUser);
+    currentUserOneMessageQuery.exists("userTwoMessage");
+    
+    var currentUserTwoMessageQuery = createCurrentUserIsUserTwoQuery(currentUser);
+    currentUserTwoMessageQuery.exists("userOneMessage");
+    
+    var orQuery = Parse.Query.or(currentUserIsUserOneQuery, currentUserIsUserTwoQuery, currentUserOneMessageQuery, currentUserTwoMessageQuery);
     orQuery.include("userOne");
     orQuery.include("userTwo");
     orQuery.limit(50);
@@ -95,6 +106,24 @@ function getCurrentUserSwipes(currentUser) {
     });
     
     return promise;
+}
+
+function createCurrentUserIsUserTwoQuery(currentUser) {
+    var currentUserIsUserTwoQuery = new Parse.Query("ParseSwipe");
+    currentUserIsUserTwoQuery.equalTo("userTwo", currentUser);
+    return currentUserIsUserTwoQuery
+}
+
+function createCurrentUserIsUserOneQuery(currentUser) {
+    var currentUserIsUserOneQuery = new Parse.Query("ParseSwipe");
+    currentUserIsUserOneQuery.equalTo("userOne", currentUser);
+    return currentUserIsUserOneQuery
+}
+
+function shouldCheckInterestedIn(currentUser) {
+    var interestedIn = currentUser.get("interestedIn")
+    //we only check the interested in parameter if they have actually set to female or male. We don't have to run an extra query parameter if they inputed all or it is nil. 
+    return (interestedIn == "male" ||  interestedIn == "female")
 }
 
 //TODO: don't let the currentUser be in the search
