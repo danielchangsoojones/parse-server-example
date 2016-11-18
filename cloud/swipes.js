@@ -62,13 +62,7 @@ function getCurrentUserSwipes(currentUser) {
     console.log("in the getCurrentUserSwipes");
     
     //make sure that the other user has a profile image
-    var innerOtherUserQuery = new Parse.Query("User");
-    innerOtherUserQuery.exists("profileImage");
-    if (shouldCheckInterestedIn(currentUser)) {
-        console.log("in the should check interested in query");
-        console.log(currentUser.get("interestedIn"));
-        innerOtherUserQuery.equalTo("gender", currentUser.get("interestedIn"));
-    }
+    var innerOtherUserQuery = createInnerUserQuery(currentUser);
     
     //find any parseSwipes where the user is either userOne or userTwo
     var currentUserIsUserOneQuery = createCurrentUserIsUserOneQuery(currentUser);
@@ -131,8 +125,7 @@ function getNewSwipes(alreadySwipedUserObjectIds, currentUser) {
     //don't want the user to search themselves
     alreadySwipedUserObjectIds.push(currentUser.id);
     
-    var query = new Parse.Query("User");
-    query.exists("profileImage");
+    var query = createInnerUserQuery(currentUser);
     query.notContainedIn("objectId", alreadySwipedUserObjectIds);
     
     var promise = new Parse.Promise();
@@ -165,6 +158,18 @@ function getNewSwipes(alreadySwipedUserObjectIds, currentUser) {
     });
     
     return promise;
+}
+
+function createInnerUserQuery(currentUser) {
+    var query = new Parse.Query("User");
+    query.exists("profileImage");
+    if (shouldCheckInterestedIn(currentUser)) {
+        console.log("in the should check interested in query");
+        console.log(currentUser.get("interestedIn"));
+        query.equalTo("gender", currentUser.get("interestedIn"));
+    }
+    
+    return query;
 }
 
 function createNewSwipe(otherUser, currentUser) {
