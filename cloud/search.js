@@ -106,7 +106,8 @@ function findParseTagsWithTitle(tagTitle) {
                 promise.resolve([cacheId, users]);
                 saveSearchCache(users, cacheId);
             } else {
-                promise.reject(Parse.Error.OBJECT_NOT_FOUND);
+                console.log(createObjectNotFoundError());
+                promise.resolve(createObjectNotFoundError());
             }
         },
         error: function(error) {
@@ -194,7 +195,7 @@ function queryCachedUserRelation(searchCache, tagTitle) {
                 saveSearchCache(users,cacheIdentifier);
             } else {
                 //no users found
-                promise.reject(Parse.Error.OBJECT_NOT_FOUND);
+                promise.resolve([null, users]);
             }
         },
         error: function(error) {
@@ -204,4 +205,9 @@ function queryCachedUserRelation(searchCache, tagTitle) {
     });
     
     return promise;
+}
+
+function createObjectNotFoundError() {
+    var error = new Parse.Error(Parse.Error.OBJECT_NOT_FOUND, "Object not found");
+    return error
 }
