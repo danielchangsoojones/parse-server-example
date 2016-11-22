@@ -38,8 +38,8 @@ Parse.Cloud.define("searchTags", function (request, response) {
     console.log(title);
     console.log(cacheIdentifier);
     
-    searchRepository.searchTagTitle(title, cacheIdentifier).then( function(users) {
-        response.success(users);
+    searchRepository.searchTagTitle(title, cacheIdentifier).then( function(results) {
+        response.success(results);
     }, function(error) {
         response.error(error);
     });

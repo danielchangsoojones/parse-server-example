@@ -118,7 +118,7 @@ function findParseTagsWithTitle(tagTitle) {
 }
 
 function saveSearchCache(users, cacheId) {
-    if users.count > 0 {
+    if (users.count > 0) {
     var SearchCache = Parse.Object.extend("SearchCache");
     var searchCache = new SearchCache();
     
