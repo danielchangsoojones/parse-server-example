@@ -118,6 +118,8 @@ function saveSearchCache(users, cacheId) {
     
     searchCache.set("cacheIdentifier", cacheId);
     
+    console.log("saving the users to cache");
+    console.log(users);
     var relation = searchCache.relation("users");
     relation.add(users);
     
