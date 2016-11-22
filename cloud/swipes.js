@@ -73,14 +73,17 @@ function getCurrentUserSwipes(currentUser) {
     currentUserIsUserTwoQuery.equalTo("hasUserTwoSwiped", false);
     currentUserIsUserTwoQuery.matchesQuery("userOne", innerOtherUserQuery);
     
+    
+    var innerUserMessageQuery = createInnerUserMessageQuery()
+    
     //add any parseswipes with a message included
     //they don't need to be in the user's interested in parameter, anyone can send a message to anyone.
     var currentUserOneMessageQuery = createCurrentUserIsUserOneQuery(currentUser);
-//    currentUserOneMessageQuery.matchesQuery("userTwo", createInnerUserMessageQuery());
+    currentUserOneMessageQuery.matchesQuery("userTwo", innerUserMessageQuery);
     currentUserOneMessageQuery.exists("userTwoMessage");
     
     var currentUserTwoMessageQuery = createCurrentUserIsUserTwoQuery(currentUser);
-//    currentUserTwoMessageQuery.matchesQuery("userOne", createInnerUserMessageQuery());
+    currentUserTwoMessageQuery.matchesQuery("userOne", innerUserMessageQuery);
     currentUserTwoMessageQuery.exists("userOneMessage");
     
     var orQuery = Parse.Query.or(currentUserIsUserOneQuery, currentUserIsUserTwoQuery, currentUserOneMessageQuery, currentUserTwoMessageQuery);
@@ -119,7 +122,7 @@ function createCurrentUserIsUserOneQuery(currentUser) {
 function createInnerUserMessageQuery() {
     var query = new Parse.Query("User");
     query.exists("profileImage");
-    return currentUserIsUserOneQuery
+    return query
 }
 
 function shouldCheckInterestedIn(currentUser) {

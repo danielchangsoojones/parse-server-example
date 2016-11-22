@@ -9,7 +9,7 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     
     var swipeRepository = require("./swipes.js");
     
-    getATestUser().then( function(theCurrentUser) {
+//    getATestUser().then( function(theCurrentUser) {
         
     
         swipeRepository.findSwipesForCurrentUser(theCurrentUser).then( function(swipes) {
@@ -20,7 +20,7 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
         
         
 
-    });
+//    });
     
         
         
