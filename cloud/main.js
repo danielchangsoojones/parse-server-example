@@ -9,7 +9,7 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     
     var swipeRepository = require("./swipes.js");
     
-//    getATestUser().then( function(theCurrentUser) {
+    getATestUser().then( function(theCurrentUser) {
         
     
         swipeRepository.findSwipesForCurrentUser(theCurrentUser).then( function(swipes) {
@@ -20,7 +20,26 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
         
         
 
-//    });
+    });
+    
+        
+        
+    
+});
+
+Parse.Cloud.define("searchTags", function (request, response) {
+    console.log("doing the search tags function");
+    
+    var searchRepository = require("./search.js");
+    
+    var titles = request.titles;
+    
+    //TODO: input the actual tagTitle and cacheObjectId parameter
+    searchRepository.searchTagTitle("straight", null).then( function(users) {
+        response.success(users);
+    }, function(error) {
+        response.error(error);
+    });
     
         
         

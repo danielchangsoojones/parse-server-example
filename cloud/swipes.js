@@ -76,9 +76,11 @@ function getCurrentUserSwipes(currentUser) {
     //add any parseswipes with a message included
     //they don't need to be in the user's interested in parameter, anyone can send a message to anyone.
     var currentUserOneMessageQuery = createCurrentUserIsUserOneQuery(currentUser);
+//    currentUserOneMessageQuery.matchesQuery("userTwo", createInnerUserMessageQuery());
     currentUserOneMessageQuery.exists("userTwoMessage");
     
     var currentUserTwoMessageQuery = createCurrentUserIsUserTwoQuery(currentUser);
+//    currentUserTwoMessageQuery.matchesQuery("userOne", createInnerUserMessageQuery());
     currentUserTwoMessageQuery.exists("userOneMessage");
     
     var orQuery = Parse.Query.or(currentUserIsUserOneQuery, currentUserIsUserTwoQuery, currentUserOneMessageQuery, currentUserTwoMessageQuery);
@@ -111,6 +113,12 @@ function createCurrentUserIsUserTwoQuery(currentUser) {
 function createCurrentUserIsUserOneQuery(currentUser) {
     var currentUserIsUserOneQuery = new Parse.Query("ParseSwipe");
     currentUserIsUserOneQuery.equalTo("userOne", currentUser);
+    return currentUserIsUserOneQuery
+}
+
+function createInnerUserMessageQuery() {
+    var query = new Parse.Query("User");
+    query.exists("profileImage");
     return currentUserIsUserOneQuery
 }
 
