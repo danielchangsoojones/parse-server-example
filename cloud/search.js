@@ -101,8 +101,13 @@ function findParseTagsWithTitle(tagTitle) {
                 users.push(user);
             } 
         }
-            promise.resolve([cacheId, users]);
-            saveSearchCache(users, cacheId);
+            
+            if (users.count > 0) {
+                promise.resolve([cacheId, users]);
+                saveSearchCache(users, cacheId);
+            } else {
+                promise.reject(Parse.Error.OBJECT_NOT_FOUND);
+            }
         },
         error: function(error) {
             promise.reject(error);
@@ -113,6 +118,7 @@ function findParseTagsWithTitle(tagTitle) {
 }
 
 function saveSearchCache(users, cacheId) {
+    if users.count > 0 {
     var SearchCache = Parse.Object.extend("SearchCache");
     var searchCache = new SearchCache();
     
@@ -120,17 +126,20 @@ function saveSearchCache(users, cacheId) {
     
     console.log("saving the users to cache");
     console.log(users);
-    var relation = searchCache.relation("users");
-    relation.add(users);
     
-    searchCache.save(null, {
-        success: function(searchCache) {
-            console.log(searchCache.id)
-        },
-        error: function(searchCache, error) {
-            console.log(error);
-        }
-    });
+        var relation = searchCache.relation("users");
+        relation.add(users);
+    
+        searchCache.save(null, {
+            success: function(searchCache) {
+                console.log(searchCache.id)
+            },
+            error: function(searchCache, error) {
+                console.log(error);
+            }
+        });
+    
+    }
 }
 
 function makeid() {
