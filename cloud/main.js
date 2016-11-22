@@ -32,8 +32,11 @@ Parse.Cloud.define("searchTags", function (request, response) {
     
     var searchRepository = require("./search.js");
     
-    var title = request.params.title;
-    var cacheIdentifier = request.params.cacheIdentifier;
+//    var title = request.params.title;
+//    var cacheIdentifier = request.params.cacheIdentifier;
+    
+    var title = "straight";
+    var cacheIdentifier = null;
     
     console.log(title);
     console.log(cacheIdentifier);

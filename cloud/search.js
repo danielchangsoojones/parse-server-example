@@ -91,6 +91,7 @@ function findParseTagsWithTitle(tagTitle) {
         var cacheId = makeid();
             
         for (var i = 0; i < userTags.length; i++) {
+            
             var userTag = userTags[i];
             var user = userTag.get("user");
             
@@ -102,7 +103,7 @@ function findParseTagsWithTitle(tagTitle) {
             } 
         }
             
-            if (users.count > 0) {
+            if (users.length > 0) {
                 promise.resolve([cacheId, users]);
                 saveSearchCache(users, cacheId);
             } else {
@@ -118,7 +119,7 @@ function findParseTagsWithTitle(tagTitle) {
 }
 
 function saveSearchCache(users, cacheId) {
-    if (users.count > 0) {
+    if (users.length > 0) {
     var SearchCache = Parse.Object.extend("SearchCache");
     var searchCache = new SearchCache();
     
