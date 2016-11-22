@@ -107,7 +107,7 @@ function findParseTagsWithTitle(tagTitle) {
                 saveSearchCache(users, cacheId);
             } else {
                 console.log(createObjectNotFoundError());
-                promise.resolve(createObjectNotFoundError());
+                promise.reject(createObjectNotFoundError());
             }
         },
         error: function(error) {
@@ -195,7 +195,7 @@ function queryCachedUserRelation(searchCache, tagTitle) {
                 saveSearchCache(users,cacheIdentifier);
             } else {
                 //no users found
-                promise.resolve([null, users]);
+                promise.reject(createObjectNotFoundError());
             }
         },
         error: function(error) {
