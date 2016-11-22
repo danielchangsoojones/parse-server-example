@@ -32,17 +32,14 @@ Parse.Cloud.define("searchTags", function (request, response) {
     
     var searchRepository = require("./search.js");
     
-    var titles = request.titles;
+    var title = request.title;
+    var cacheIdentifier = request.cacheIdentifier
     
-    //TODO: input the actual tagTitle and cacheObjectId parameter
-    searchRepository.searchTagTitle("straight", null).then( function(users) {
+    searchRepository.searchTagTitle(title, cacheIdentifier).then( function(users) {
         response.success(users);
     }, function(error) {
         response.error(error);
     });
-    
-        
-        
     
 });
     

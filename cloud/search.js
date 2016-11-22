@@ -50,21 +50,27 @@ module.exports = {
 //    }
 };
 
-function searchTagTitle(tagTitle, cacheObjectId) {
+function searchTagTitle(tagTitle, cacheIdentifier) {
     console.log("in the search tag title function");
     var promise = new Parse.Promise();
     
     
-    if (cacheObjectId == null) {
+    if (cacheIdentifier == null) {
         //the first tag, therefore no cache exists currently
         console.log("cacheObjectId is null");
-        findParseTagsWithTitle(tagTitle).then(function(users) {
-            promise.resolve(users);
+        findParseTagsWithTitle(tagTitle).then(function(results) {
+            promise.resolve(results);
         }, function(error) {
             promise.reject(error);
         });
     } else {
-        console.log("in the else statement");
+        //cache identifier exists
+        querySearchCache(tagTitle, cacheIdentifier).then(function(results) {
+            console.log("hey im in the results");
+            promise.resolve(results);
+        }, function(error) {
+            promise.reject(error);
+        });
     }
     
     return promise;
@@ -80,7 +86,6 @@ function findParseTagsWithTitle(tagTitle) {
     query.find({
         success: function(userTags) {
         //I set a limit for how many to return to client side, but then I still cache all of the userObjectIds
-        var userObjectIds = [];
         var users = [];
         var limit = 50;
         var cacheId = makeid();
@@ -88,8 +93,6 @@ function findParseTagsWithTitle(tagTitle) {
         for (var i = 0; i < userTags.length; i++) {
             var userTag = userTags[i];
             var user = userTag.get("user");
-            
-            userObjectIds.push(user.id);
             
             if (i > limit) {
                 //if we have a bunch of tags in the future, we return once the limit is hit. But, if not hit, then the users are returned after everything. 
@@ -99,6 +102,7 @@ function findParseTagsWithTitle(tagTitle) {
             } 
         }
             promise.resolve([cacheId, users]);
+            saveSearchCache(users, cacheId);
         },
         error: function(error) {
             promise.reject(error);
@@ -108,23 +112,29 @@ function findParseTagsWithTitle(tagTitle) {
     return promise;
 }
 
-function saveSearchCache(cacheId, userObjectIds) {
+function saveSearchCache(users, cacheId) {
     var SearchCache = Parse.Object.extend("SearchCache");
+    var searchCache = new SearchCache();
     
+    searchCache.set("cacheIdentifier", cacheId);
     
-    var caches = [];
-    for (var i = 0; i < userObjectIds.length; i++) {
-        var cache = new SearchCache();
-        cache.set("userObjectId", userObjectIds[i]);
-        cache.set("cacheId", cacheId);
-    }
+    var relation = searchCache.relation("users");
+    relation.add(users);
     
+    searchCache.save(null, {
+        success: function(searchCache) {
+            console.log(searchCache.id)
+        },
+        error: function(searchCache, error) {
+            console.log(error);
+        }
+    });
 }
 
 function makeid() {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    var length = 10
+    var length = 10;
 
     for( var i=0; i < length; i++ )
         text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -132,3 +142,55 @@ function makeid() {
     return text;
 }
 
+function querySearchCache(tagTitle, cacheIdentifier) {
+    var query = new Parse.Query("SearchCache");
+    query.equalTo("cacheIdentifier", cacheIdentifier);
+    
+    var promise = new Parse.Promise();
+    
+    query.first({
+        success: function(searchCache) {
+           queryCachedUserRelation(searchCache, tagTitle).then(function(results) {
+               promise.resolve(results);
+           }, 
+        function(error){
+               promise.reject(error);
+        });
+        },
+        error: function(error) {
+            console.log(error);
+            promise.reject(error);
+        }
+    });
+    
+    return promise
+}
+
+function queryCachedUserRelation(searchCache, tagTitle) {
+    console.log(searchCache);
+    var relation = searchCache.relation("users");
+    var query = relation.query();
+    //TODO: need to make the users have an array of their tagTitles. 
+    query.equalTo("tagsArray", tagTitle);
+    
+    var promise = new Parse.Promise();
+    
+    query.find({
+        success: function(users) {
+            var cacheIdentifier = makeid()
+            if (users.length > 0) {
+                promise.resolve([cacheIdentifier,users]);
+                saveSearchCache(users,cacheIdentifier);
+            } else {
+                //no users found
+                promise.reject(Parse.Error.OBJECT_NOT_FOUND);
+            }
+        },
+        error: function(error) {
+            console.log(error);
+            promise.reject(error);
+        }
+    });
+    
+    return promise;
+}
