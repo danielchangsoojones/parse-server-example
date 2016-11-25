@@ -64,6 +64,26 @@ Parse.Cloud.define("searchSlider", function (request, response) {
         response.error(error);
     });
 });
+
+Parse.Cloud.define("removeSearchTags", function (request, response) {
+    console.log("doing the remove search function");
+//    var searchRepository = require("./search.js");
+    
+    var cacheIdentifier = request.params.cacheIdentifier;
+    var tagTitles = request.params.tagTitles;
+    var sliderTags = request.params.sliderTags; 
+    
+    console.log(tagTitles);
+    console.log(sliderTags);
+    
+    
+    
+//    searchRepository.searchSliders(cacheIdentifier, minValue, maxValue, parseColumnName).then(function(results) {
+//        response.success(results);
+//    }, function(error) {
+//        response.error(error);
+//    });
+});
     
 
 //USE THIS WHEN TESTING TO GET A CURRENT USER
