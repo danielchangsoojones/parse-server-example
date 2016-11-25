@@ -237,6 +237,10 @@ function searchSliders(cacheIdentifier, minValue, maxValue, parseColumnName) {
         console.log("cacheObjectId is null");
         query = new Parse.Query("User");
         
+        console.log(minValue);
+        console.log(maxValue);
+        confirm.log(parseColumnName);
+        
         findUserWithinSlider(query, minValue, maxValue, parseColumnName).then(function(results) {
             promise.resolve(results);
         }, function(error) {
