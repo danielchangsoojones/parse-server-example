@@ -14,6 +14,8 @@ module.exports = {
     searchSliders: function(cacheIdentifier, minValue, maxValue, parseColumnName) {
         var promise = new Parse.Promise();
         
+        console.log(parseColumnName);
+        
         searchSliders(cacheIdentifier, minValue, maxValue, parseColumnName).then(function(results) {
             promise.resolve(results);
         }, function(error) {
