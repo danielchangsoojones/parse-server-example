@@ -55,6 +55,8 @@ Parse.Cloud.define("searchSlider", function (request, response) {
     var maxValue = request.params.maxValue; 
     var parseColumnName = request.params.parseColumnName;
     
+    console.log(parseColumnName);
+    
     
     searchRepository.searchSliders(cacheIdentifier, minValue, maxValue, parseColumnName).then(function(results) {
         response.success(results);
