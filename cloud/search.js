@@ -241,7 +241,7 @@ function searchSliders(cacheIdentifier, minValue, maxValue, parseColumnName) {
         
         console.log(minValue);
         console.log(maxValue);
-        confirm.log(parseColumnName);
+        console.log(parseColumnName);
         
         findUserWithinSlider(query, minValue, maxValue, parseColumnName).then(function(results) {
             promise.resolve(results);
