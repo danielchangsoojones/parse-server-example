@@ -41,7 +41,18 @@ process.nextTick(function () {
 //                    }
 //    });
     
-        Parse.Cloud.run("searchTags", {testData:true}, {
+//        Parse.Cloud.run("searchTags", {testData:true}, {
+//                    success: function (result) {
+//                        console.log("right BEFORE we get result return to testing local debugging");
+//                        console.log(result);
+//                        console.log("right AFTER we get result return to testing local debugging");
+//                    },
+//                    error: function (error) {
+//                        console.log(error);
+//                    }
+//    });
+    
+    Parse.Cloud.run("searchSlider", {testData:true}, {
                     success: function (result) {
                         console.log("right BEFORE we get result return to testing local debugging");
                         console.log(result);

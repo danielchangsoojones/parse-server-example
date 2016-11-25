@@ -2,15 +2,28 @@ module.exports = {
     searchTagTitle: function(tagTitle, cacheObjectId) {
         var promise = new Parse.Promise();
         
-        searchTagTitle(tagTitle, cacheObjectId).then(function(users) {
-            promise.resolve(users);
+        searchTagTitle(tagTitle, cacheObjectId).then(function(results) {
+            promise.resolve(results);
         }, function(error) {
             promise.reject(error);
         });
         
         
         return promise;
+    },
+    searchSliders: function(cacheIdentifier, minValue, maxValue, parseColumnName) {
+        var promise = new Parse.Promise();
+        
+        searchSliders(cacheIdentifier, minValue, maxValue, parseColumnName).then(function(results) {
+            promise.resolve(results);
+        }, function(error) {
+            promise.reject(error);
+        });
+        
+        return promise;
     }
+    
+    
     
     
     
@@ -119,6 +132,8 @@ function findParseTagsWithTitle(tagTitle) {
 }
 
 function saveSearchCache(users, cacheId) {
+    console.log("saving the search cache");
+    
     if (users.length > 0) {
     var SearchCache = Parse.Object.extend("SearchCache");
     var searchCache = new SearchCache();
@@ -211,3 +226,104 @@ function createNoObjectsReturn() {
     var results = ["", []];
     return results;
 }
+
+//for searching sliders
+function searchSliders(cacheIdentifier, minValue, maxValue, parseColumnName) {
+     console.log("in the search sliders func");
+    var promise = new Parse.Promise();
+    
+    if (cacheIdentifier == null) {
+        //the first tag, therefore no cache exists currently
+        console.log("cacheObjectId is null");
+        query = new Parse.Query("User");
+        
+        findUserWithinSlider(query, minValue, maxValue, parseColumnName).then(function(results) {
+            promise.resolve(results);
+        }, function(error) {
+            promise.reject(error);
+        });
+    } else {
+        //cache identifier exists
+        var query = new Parse.Query("SearchCache");
+        query.equalTo("cacheIdentifier", cacheIdentifier);
+        
+    query.first({
+        success: function(searchCache) {
+           var relation = searchCache.relation("users");
+            var userQuery = relation.query();
+            findUserWithinSlider(userQuery, minValue, maxValue, parseColumnName).then(function(results) {
+                promise.resolve(results);
+            }, function(error) {
+                promise.reject(error);
+            });
+        }, error: function(error) {
+            console.log(error);
+            promise.reject(error);
+        }
+        });
+    }
+    
+    return promise;
+}
+
+function findUserWithinSlider(query, minValue, maxValue, parseColumnName) {
+    var promise = new Parse.Promise();
+    
+    var updatedQuery = createSliderQueries(query, minValue, maxValue, parseColumnName);
+    
+    runSliderQuery(updatedQuery).then(function(results) {
+        promise.resolve(results);
+    }, function(error) {
+        promise.reject(error);
+    });
+    
+    
+    return promise;
+}
+
+function runSliderQuery(query) {
+    var promise = new Parse.Promise();
+    
+     query.find({
+        success: function(users) {
+            //I set a limit for how many to return to client side, but then I still cache all of the userObjectIds
+            var limit = 50;
+            var cacheId = makeid();
+            
+            if (users.length > 0) {
+                var usersToPass = users.slice(0, limit + 1);
+                promise.resolve([cacheId, usersToPass]);
+                saveSearchCache(users, cacheId);
+            } else {
+                promise.resolve(createNoObjectsReturn());
+            }
+        },
+        error: function(error) {
+            console.log(error);
+            promise.reject(error);
+        }
+    });
+    
+    return promise;
+}
+
+function createSliderQueries(query, minValue, maxValue, parseColumnName) {
+    switch (parseColumnName) {
+        case "location":
+            if (maxValue != null) {
+                //the minValue should be user location, the maxValue is how many miles away from there
+                query.withinMiles(parseColumnName, minValue, maxValue);
+            }
+        default:
+            query.greaterThanOrEqualTo(parseColumnName, minValue);
+            if (maxValue != null) {
+                query.lessThanOrEqualTo(parseColumnName, maxValue);
+            }
+    }
+    
+    return query;
+}
+
+
+
+
