@@ -5,6 +5,18 @@ var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var path = require('path');
 
+Configuration
+
+var myConfiguration {
+    var isProduction = false
+    if isProduction {
+        masterKey: "shuffle21319808432940LKJLSJD"
+        serverURL: "http://shuffles-production.herokuapp.com/parse"
+    } else {
+        //Development database
+    }
+};
+
 var databaseUri = process.env.DATABASE_URI || process.env.MONGODB_URI;
 
 if (!databaseUri) {
@@ -31,7 +43,7 @@ emailVerifyTokenValidityDuration: 2 * 60 * 60, // in seconds (2 hours = 7200 sec
 preventLoginWithUnverifiedEmail: false, // defaults to false
 
 //Mark: Development Database
-publicServerURL: 'https://chachatinder.herokuapp.com/parse'.
+publicServerURL: 'https://chachatinder.herokuapp.com/parse',
    
 //Mark: Production Database    
 //publicServerURL: 'http://shuffles-production.herokuapp.com/parse',
