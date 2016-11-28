@@ -5,15 +5,24 @@ var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var path = require('path');
 
-//var myConfiguration {
-//    var isProduction = false
-//    if isProduction {
-//        masterKey: "shuffle21319808432940LKJLSJD"
-//        serverURL: "http://shuffles-production.herokuapp.com/parse"
-//    } else {
-//        //Development database
-//    }
-//};
+var myConfiguration = function() {
+        var isProduction = false
+        
+        //Development database
+        var masterKey = "ajdkdkfld6354758"
+        var serverURL = "https://chachatinder.herokuapp.com/parse"
+        
+        if (isProduction) {
+            masterKey = "shuffle21319808432940LKJLSJD"
+            serverURL = "http://shuffles-production.herokuapp.com/parse"
+        }
+
+
+    return {
+        masterKey: masterKey,
+        serverURL: serverURL
+    };
+};
 
 var databaseUri = process.env.DATABASE_URI || process.env.MONGODB_URI;
 
@@ -26,14 +35,9 @@ var api = new ParseServer({
   cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.js',
   appId: process.env.APP_ID || 'myAppId',
     
-    //MARK: Production Database
-//    masterKey: process.env.MASTER_KEY || 'shuffle21319808432940LKJLSJD', //Add your master key here. Keep it secret!
-//  serverURL: process.env.SERVER_URL || 'http://shuffles-production.herokuapp.com/parse',  // Don't forget to change to https if needed
-    
-    
     //MARK: Development Database
-    masterKey: process.env.MASTER_KEY || 'ajdkdkfld6354758', //Add your master key here. Keep it secret!
-  serverURL: process.env.SERVER_URL || 'https://chachatinder.herokuapp.com/parse', // Don't forget to change to https if needed
+    masterKey: process.env.MASTER_KEY || myConfiguration().masterKey, //Add your master key here. Keep it secret!
+  serverURL: process.env.SERVER_URL || myConfiguration().serverURL, // Don't forget to change to https if needed
         // here the configuration for email begins
     
 verifyUserEmails: false,  //depends on your needs, you can set it to false 
@@ -41,10 +45,7 @@ emailVerifyTokenValidityDuration: 2 * 60 * 60, // in seconds (2 hours = 7200 sec
 preventLoginWithUnverifiedEmail: false, // defaults to false
 
 //Mark: Development Database
-publicServerURL: 'https://chachatinder.herokuapp.com/parse',
-   
-//Mark: Production Database    
-//publicServerURL: 'http://shuffles-production.herokuapp.com/parse',
+publicServerURL: myConfiguration().serverURL,
  // Your apps name. This will appear in the subject and body of the emails that are sent.
 appName: 'ShuffleHunt',
 
