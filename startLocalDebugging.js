@@ -37,19 +37,20 @@ Parse.serverURL = myConfiguration().serverURL
 process.nextTick(function () {
    //run cloud code
     require('./cloud/main.js');
-    console.log("it ran");
-    Parse.Cloud.run("getCurrentUserSwipes", {testData:true}, {
-                    success: function (result) {
-                        console.log("right BEFORE we get result return to testing local debugging");
-                        console.log(result);
-                        console.log("right AFTER we get result return to testing local debugging");
-                    },
-                    error: function (error) {
-                        console.log(error);
-                    }
-    });
+//    Parse.Cloud.run("getCurrentUserSwipes", {testData:true}, {
+//                    success: function (result) {
+//                        console.log("right BEFORE we get result return to testing local debugging");
+//                        console.log(result);
+//                        console.log("right AFTER we get result return to testing local debugging");
+//                    },
+//                    error: function (error) {
+//                        console.log(error);
+//                    }
+//    });
     
+//    Parse.Cloud.runJob("changeTagging");
+    Parse.Cloud.runJob("removeDuplicates");
+//Parse.Cloud.runJob("convertOriginalTagClass");
     
-
 
 });
