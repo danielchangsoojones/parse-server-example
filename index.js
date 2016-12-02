@@ -62,8 +62,12 @@ options: {
     }
   },
     push: {
+        android: {
+			senderId: '', // The Sender ID of GCM
+			apiKey: '' // The Server API Key of GCM
+		},
 		ios: {
-			pfx: 'buu',
+			pfx: 'cloud/certs/DevelopmentPushNotif.p12',
             passphrase: 'dannyboypapa1234', // optional password to your p12
             cert: '', // If not using the .p12 format, the path to the certificate PEM to load from disk 
 			bundleId: 'com.Chacha.Shuffle', // The bundle identifier associated with your app
