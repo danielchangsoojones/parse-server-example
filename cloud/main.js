@@ -26,6 +26,23 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
         
     
 });
+
+Parse.Cloud.define("sendTestPush", function (request, response) {
+                   
+    Parse.Push.send({
+	where: { 
+		"deviceType": { "$in": ["ios"]  }  	  
+	},
+	data: { 
+		"title": "Ant-man",
+		"alert": "This is awesome. It is awesome."
+	}
+    }, { useMasterKey: true });
+    console.log("just went through the push notifications");
+        
+        
+    
+});
     
 
 //USE THIS WHEN TESTING TO GET A CURRENT USER
