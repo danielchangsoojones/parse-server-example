@@ -28,20 +28,25 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
 });
 
 Parse.Cloud.define("sendTestPush", function (request, response) {
-                   
-    Parse.Push.send({
-	where: { 
-		"deviceType": { "$in": ["ios"]  }  	  
-	},
-	data: { 
-		"title": "Ant-man",
-		"alert": "This is awesome. It is awesome."
-	}
-    }, { useMasterKey: true });
-    console.log("just went through the push notifications");
-        
-        
     
+    
+    
+    Parse.Push.send({
+  where: {  deviceType: { "$in": [ "ios"  ]  }  	},
+  data: {
+    alert: 'Test',
+    badge: 1,
+    sound: 'default'
+  }
+}, { useMasterKey: true }).then(function() {
+  // Push sent!
+        console.log("successs");
+}, function(error) {
+  // There was a problem :(
+        console.log("fuck")
+      console.log(error);
+});
+         
 });
     
 

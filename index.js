@@ -63,7 +63,7 @@ options: {
   },
     push: {
 		ios: {
-			pfx: '/cloud/certs/DevelopmentPushNotif.p12',
+			pfx: 'buu',
             passphrase: 'dannyboypapa1234', // optional password to your p12
             cert: '', // If not using the .p12 format, the path to the certificate PEM to load from disk 
 			bundleId: 'com.Chacha.Shuffle', // The bundle identifier associated with your app
