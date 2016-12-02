@@ -65,7 +65,7 @@ options: {
 		ios: {
 			pfx: '/cloud/certs/DevelopmentPushNotif.p12',
             passphrase: 'dannyboypapa1234', // optional password to your p12
-            // the path and filename to the .p12 file you exported earlier. 
+            cert: '', // If not using the .p12 format, the path to the certificate PEM to load from disk 
 			bundleId: 'com.Chacha.Shuffle', // The bundle identifier associated with your app
 			key: '', // If not using the .p12 format, the path to the private key PEM to load from disk
 			production: false // Specifies which environment to connect to: Production (if true) or Sandbox
