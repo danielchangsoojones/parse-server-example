@@ -62,10 +62,6 @@ options: {
     }
   },
     push: {
-        android: {
-			senderId: '', // The Sender ID of GCM
-			apiKey: '' // The Server API Key of GCM
-		},
 		ios: {
 			pfx: 'cloud/certs/DevelopmentPushNotif.p12',
             passphrase: 'dannyboypapa1234', // optional password to your p12
