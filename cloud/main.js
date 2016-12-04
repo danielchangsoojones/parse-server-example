@@ -40,6 +40,34 @@ Parse.Cloud.define("sendMatchPushNotification", function (request, response) {
     notificationRepository.sendMatchNotification(targetUserObjectId, parseSwipeObjectId);
          
 });
+
+//Parse.Cloud.define("sendChatNotification", function (request, response) {
+////    var sender = request.object.get("sender");
+////    var message = request.object.get("chatText");
+//    getATestUser().then( function(theCurrentUser) {
+//        var message = "hi, i'm testing"
+//        var sender = theCurrentUser;
+//        
+//        var notificationRepository = require("./pushNotifications.js");
+//        notificationRepository.sendChatNotification(sender, message);
+//    
+//    
+//    
+//    });
+//    
+//    
+//    
+//    
+//         
+//});
+
+Parse.Cloud.afterSave("Chat", function(request) {
+    var sender = request.object.get("sender");
+    var message = request.object.get("chatText");
+    
+    var notificationRepository = require("./pushNotifications.js");
+    notificationRepository.sendChatNotification(sender, message);
+});
     
 
 //USE THIS WHEN TESTING TO GET A CURRENT USER
