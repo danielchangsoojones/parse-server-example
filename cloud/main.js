@@ -29,10 +29,10 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
 
 //Push notifications
 Parse.Cloud.define("sendMatchPushNotification", function (request, response) {
-//    var parseSwipeObjectId = request.parseSwipeObjectId;
-//    var targetUserObjectId = request.targetUserObjectId;
-    var targetUserObjectId = "FtUz5lCNv7"
-    var parseSwipeObjectId = "5cNeKxXR9A"
+    var parseSwipeObjectId = request.params.parseSwipeObjectId;
+    var targetUserObjectId = request.params.targetUserObjectId;
+//    var targetUserObjectId = "FtUz5lCNv7"
+//    var parseSwipeObjectId = "5cNeKxXR9A"
     
     console.log("we are in the sendMatchPushNotification");
     var notificationRepository = require("./pushNotifications.js");
