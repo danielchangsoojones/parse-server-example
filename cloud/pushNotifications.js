@@ -4,7 +4,7 @@ module.exports = {
     }
 };
 
-function sendMatchNotification(targetUserObjectId, objectId) {
+function sendMatchNotification(targetUserObjectId, parseSwipeObjectId) {
     var pushQuery = new Parse.Query(Parse.Installation);
     
     var innerQuery = new Parse.Query("User");
@@ -19,7 +19,7 @@ function sendMatchNotification(targetUserObjectId, objectId) {
     badge: "Increment",
     sound: 'default',
     "identifier": "toMatch",
-    "objectId": objectId
+    "objectId": parseSwipeObjectId
     }
     }, { useMasterKey: true }).then(function() {
     // Push sent!
