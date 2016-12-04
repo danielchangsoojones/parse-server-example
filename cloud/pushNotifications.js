@@ -2,8 +2,8 @@ module.exports = {
     sendMatchNotification: function(targetUserObjectId, parseSwipeObjectId) {
         sendMatchNotification(targetUserObjectId, parseSwipeObjectId);
     },
-    sendChatNotification: function(sender, chatMessage) {
-        sendChatNotification(sender, chatMessage)
+    sendChatNotification: function(receiver, sender, chatMessage) {
+        sendChatNotification(receiver, sender, chatMessage)
     }
 };
 
@@ -29,10 +29,10 @@ function sendMatchNotification(targetUserObjectId, parseSwipeObjectId) {
       });
 }
 
-function sendChatNotification(sender, chatMessage) {
-    var pushQuery = createPushQuery(sender.id);
-    var fullName = sender.get("fullName");
-    var notificationMessage = fullName + "sent you a new message"
+function sendChatNotification(receiver, sender, chatMessage) {
+    var pushQuery = createPushQuery(receiver.id);
+    var fullName = receiver.get("fullName");
+    var notificationMessage = fullName + " sent you a new message"
     
     Parse.Push.send({
         where: pushQuery,
@@ -41,14 +41,13 @@ function sendChatNotification(sender, chatMessage) {
             badge: "Increment",
             sound: 'default',
             "identifier": "toChat",
-            "objectId": sender.id
+            "senderObjectId": sender.id
         }
     }, { useMasterKey: true }).then(function() {
             // Push sent!
             console.log("successs");
         }, function(error) {
             // There was a problem
-            console.log("fuck")
             console.log(error);
     });
 }

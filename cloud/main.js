@@ -42,14 +42,13 @@ Parse.Cloud.define("sendMatchPushNotification", function (request, response) {
 });
 
 //Parse.Cloud.define("sendChatNotification", function (request, response) {
-////    var sender = request.object.get("sender");
-////    var message = request.object.get("chatText");
 //    getATestUser().then( function(theCurrentUser) {
 //        var message = "hi, i'm testing"
+//        var receiver = theCurrentUser;
 //        var sender = theCurrentUser;
 //        
 //        var notificationRepository = require("./pushNotifications.js");
-//        notificationRepository.sendChatNotification(sender, message);
+//        notificationRepository.sendChatNotification(receiver, sender, message);
 //    
 //    
 //    
@@ -62,11 +61,12 @@ Parse.Cloud.define("sendMatchPushNotification", function (request, response) {
 //});
 
 Parse.Cloud.afterSave("Chat", function(request) {
-    var sender = request.object.get("sender");
+    var receiver = request.object.get("receiver");
     var message = request.object.get("chatText");
+    var sender = request.object.get("sender");
     
     var notificationRepository = require("./pushNotifications.js");
-    notificationRepository.sendChatNotification(sender, message);
+    notificationRepository.sendChatNotification(receiver, sender, message);
 });
     
 
