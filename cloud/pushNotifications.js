@@ -1,13 +1,16 @@
 module.exports = {
-    sendMatchNotification: function(parseSwipeObjectId) {
-        sendMatchNotification(objectId);
+    sendMatchNotification: function(targetUserObjectId, parseSwipeObjectId) {
+        sendMatchNotification(targetUserObjectId, parseSwipeObjectId);
     }
 };
 
-function sendMatchNotification(objectId) {
+function sendMatchNotification(targetUserObjectId, objectId) {
     var pushQuery = new Parse.Query(Parse.Installation);
-    pushQuery.equalTo('deviceType', 'ios');
-    pushQuery.limit = 1; //so if two installations exist for a device identifier, it will only send one instead of multiple.
+    
+    var innerQuery = new Parse.Query("User");
+    innerQuery.equalTo("objectId", targetUserObjectId);
+    
+    pushQuery.matchesQuery("user", innerQuery);
     
     Parse.Push.send({
     where: pushQuery,
@@ -16,7 +19,7 @@ function sendMatchNotification(objectId) {
     badge: "Increment",
     sound: 'default',
     "identifier": "toMatch",
-    "objectId": "H7LylHlnZr"
+    "objectId": objectId
     }
     }, { useMasterKey: true }).then(function() {
     // Push sent!
