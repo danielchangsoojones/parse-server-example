@@ -1,0 +1,29 @@
+module.exports = {
+    sendMatchNotification: function(parseSwipeObjectId) {
+        sendMatchNotification(objectId);
+    }
+};
+
+function sendMatchNotification(objectId) {
+    var pushQuery = new Parse.Query(Parse.Installation);
+    pushQuery.equalTo('deviceType', 'ios');
+    pushQuery.limit = 1; //so if two installations exist for a device identifier, it will only send one instead of multiple.
+    
+    Parse.Push.send({
+    where: pushQuery,
+    data: {
+    alert: 'Test',
+    badge: "Increment",
+    sound: 'default',
+    "identifier": "toMatch",
+    "objectId": "H7LylHlnZr"
+    }
+    }, { useMasterKey: true }).then(function() {
+    // Push sent!
+        console.log("successs");
+    }, function(error) {
+        // There was a problem
+        console.log("fuck")
+        console.log(error);
+      });
+}
