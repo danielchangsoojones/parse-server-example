@@ -46,13 +46,12 @@ Parse.Cloud.define("sendChatNotification", function (request, response) {
     
     
     getATestUser().then( function(theCurrentUser) {
-        var Chat = Parse.Object.extend("Chat");
-        var gameScore = new Chat();
+        var ParseUserTag = Parse.Object.extend("ParseUserTag");
+        var gameScore = new ParseUserTag();
 
-        gameScore.set("chatRoom", "testing");
-        gameScore.set("chatText", "testing Chat texts");
-        gameScore.set("sender", theCurrentUser);
-        gameScore.set("receiver", theCurrentUser);
+        gameScore.set("tagTitle", "testing");
+        gameScore.set("user", theCurrentUser);
+        gameScore.set("createdBy", theCurrentUser);
 
 gameScore.save(null, {
   success: function(gameScore) {
@@ -64,21 +63,8 @@ gameScore.save(null, {
     // error is a Parse.Error with an error code and message.
     console.log('Failed to create new object, with error code: ' + error.message);
   }
+}); 
 });
-        
-        
-        
-        
-//        var message = "hi, i'm testing"
-//        var receiver = theCurrentUser;
-//        var sender = theCurrentUser;
-//        
-//        var notificationRepository = require("./pushNotifications.js");
-//        notificationRepository.sendChatNotification(receiver, sender, message);
-    
-    
-    
-    });
     
     
     
@@ -92,6 +78,15 @@ Parse.Cloud.afterSave("Chat", function(request) {
     var sender = request.object.get("sender");
     
     console.log(receiver);
+    
+    var notificationRepository = require("./pushNotifications.js");
+    notificationRepository.sendChatNotification(receiver, sender, message);
+});
+
+Parse.Cloud.afterSave("ParseUserTag", function(request) {
+    var userForTag = request.object.get("user");
+    var tagTitle = request.object.get("tagTitle");
+    var createdBy = request.object.get("createdBy");
     
     var notificationRepository = require("./pushNotifications.js");
     notificationRepository.sendChatNotification(receiver, sender, message);

@@ -4,6 +4,9 @@ module.exports = {
     },
     sendChatNotification: function(receiver, sender, chatMessage) {
         sendChatNotification(receiver, sender, chatMessage)
+    },
+    sendAddedTagNotification: function(userForTag, tagTitle, createdBy) {
+        sendAddedTagNotification(userForTag, tagTitle, createdBy);
     }
 };
 
@@ -52,10 +55,36 @@ function sendChatNotification(receiver, sender, chatMessage) {
             console.log(error);
         });
     });
-    
-    
-
 }
+
+function sendAddedTagNotification(userForTag, tagTitle, createdBy) {
+    if (userForTag.id != createdBy.id && createdBy != null) {
+        createdBy.fetch().then(function(fetchedCreatedBy) {
+        var pushQuery = createPushQuery(userForTag.id);
+        var fullName = createdBy.get("fullName");
+        var firstName = fullName.substring(0, string.indexOf(" "));
+        var notificationMessage = firstName + " tag you as " + tagTitle
+    
+        Parse.Push.send({
+            where: pushQuery,
+            data: {
+                alert: notificationMessage,
+                badge: "Increment",
+                sound: 'default',
+                "identifier": "toApproveTag",
+            }
+        }, { useMasterKey: true }).then(function() {
+            // Push sent!
+            console.log("successs");
+        }, function(error) {
+            // There was a problem
+            console.log(error);
+        });
+    });
+        
+    }
+}
+
 
 function createPushQuery(targetUserObjectId) {
     var pushQuery = new Parse.Query(Parse.Installation);
