@@ -58,11 +58,15 @@ function sendChatNotification(receiver, sender, chatMessage) {
 }
 
 function sendAddedTagNotification(userForTag, tagTitle, createdBy) {
+    console.log("heyyyyy");
+    console.log(userForTag);
+    console.log(createdBy);
     if (userForTag.id != createdBy.id && createdBy != null) {
         createdBy.fetch().then(function(fetchedCreatedBy) {
         var pushQuery = createPushQuery(userForTag.id);
         var fullName = fetchedCreatedBy.get("fullName");
-        var firstName = fullName.substring(0, string.indexOf(" "));
+//        var firstName = fullName.substring(0, string.indexOf(" "));
+            console.log("fullName")
         var notificationMessage = firstName + " tag you as " + tagTitle
     
         Parse.Push.send({
