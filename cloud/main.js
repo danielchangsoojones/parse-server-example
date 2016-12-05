@@ -65,6 +65,8 @@ Parse.Cloud.afterSave("Chat", function(request) {
     var message = request.object.get("chatText");
     var sender = request.object.get("sender");
     
+    console.log(receiver);
+    
     var notificationRepository = require("./pushNotifications.js");
     notificationRepository.sendChatNotification(receiver, sender, message);
 });
