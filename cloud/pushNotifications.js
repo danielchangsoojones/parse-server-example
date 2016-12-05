@@ -65,10 +65,8 @@ function sendAddedTagNotification(userForTag, tagTitle, createdBy) {
         createdBy.fetch().then(function(fetchedCreatedBy) {
         var pushQuery = createPushQuery(userForTag.id);
         var fullName = fetchedCreatedBy.get("fullName");
-//        var firstName = fullName.substring(0, string.indexOf(" "));
-        console.log(fullName)
-//        var notificationMessage = firstName + " tag you as " + tagTitle
-            var notificationMessage = " tag you as "
+        var firstName = fullName.substring(0, fullName.indexOf(" "));
+        var notificationMessage = firstName + " tag you as " + tagTitle
     
         Parse.Push.send({
             where: pushQuery,
