@@ -52,16 +52,17 @@ Parse.Cloud.define("sendChatNotification", function (request, response) {
         gameScore.set("tagTitle", "testing");
         gameScore.set("user", theCurrentUser);
         gameScore.set("createdBy", theCurrentUser);
+        console.log(theCurrentUser.id);
 
-gameScore.save(null, {
-  success: function(gameScore) {
-    // Execute any logic that should take place after the object is saved.
-    console.log('New object created with objectId: ' + gameScore.id);
-  },
-  error: function(gameScore, error) {
-    // Execute any logic that should take place if the save fails.
-    // error is a Parse.Error with an error code and message.
-    console.log('Failed to create new object, with error code: ' + error.message);
+        gameScore.save(null, {
+        success: function(gameScore) {
+        // Execute any logic that should take place after the object is saved.
+        console.log('New object created with objectId: ' + gameScore.id);
+        },
+        error: function(gameScore, error) {
+        // Execute any logic that should take place if the save fails.
+        // error is a Parse.Error with an error code and message.
+        console.log('Failed to create new object, with error code: ' + error.message);
   }
 }); 
 });
@@ -89,7 +90,7 @@ Parse.Cloud.afterSave("ParseUserTag", function(request) {
     var createdBy = request.object.get("createdBy");
     
     var notificationRepository = require("./pushNotifications.js");
-    notificationRepository.sendChatNotification(receiver, sender, message);
+    notificationRepository.sendAddedTagNotification(userForTag, tagTitle, createdBy);
 });
     
 
