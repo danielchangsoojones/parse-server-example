@@ -62,13 +62,17 @@ options: {
     }
   },
     push: {
-		ios: {
+		ios: [
+            {
 			pfx: 'cloud/certs/ParsePushDevelopmentCertificate.p12',
-            cert: '', // If not using the .p12 format, the path to the certificate PEM to load from disk 
 			bundleId: 'com.Chacha.Shuffle', // The bundle identifier associated with your app
-			key: '', // If not using the .p12 format, the path to the private key PEM to load from disk
 			production: false // Specifies which environment to connect to: Production (if true) or Sandbox
-		}
+		  }, 
+            {
+                pfx: 'cloud/certs/PushNotificationProductionCertificate.p12',
+                bundleId: 'com.Chacha.Shuffle', // The bundle identifier associated with your app
+                production: true // Specifies which environment to connect to: Production (if true) or Sandbox
+            }]
 	},
     
   liveQuery: {
