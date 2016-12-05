@@ -30,26 +30,31 @@ function sendMatchNotification(targetUserObjectId, parseSwipeObjectId) {
 }
 
 function sendChatNotification(receiver, sender, chatMessage) {
-    var pushQuery = createPushQuery(receiver.id);
-    var fullName = receiver.get("fullName");
-    var notificationMessage = fullName + " sent you a new message"
+    receiver.fetch().then(function(fullReceiver) {
+            var pushQuery = createPushQuery(fullReceiver.id);
+        var fullName = fullReceiver.get("fullName");
+        var notificationMessage = fullName + " sent you a new message"
     
-    Parse.Push.send({
-        where: pushQuery,
-        data: {
-            alert: notificationMessage,
-            badge: "Increment",
-            sound: 'default',
-            "identifier": "toChat",
-            "senderObjectId": sender.id
-        }
-    }, { useMasterKey: true }).then(function() {
+        Parse.Push.send({
+            where: pushQuery,
+            data: {
+                alert: notificationMessage,
+                badge: "Increment",
+                sound: 'default',
+                "identifier": "toChat",
+                "senderObjectId": sender.id
+            }
+        }, { useMasterKey: true }).then(function() {
             // Push sent!
             console.log("successs");
         }, function(error) {
             // There was a problem
             console.log(error);
+        });
     });
+    
+    
+
 }
 
 function createPushQuery(targetUserObjectId) {

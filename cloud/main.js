@@ -41,24 +41,50 @@ Parse.Cloud.define("sendMatchPushNotification", function (request, response) {
          
 });
 
-//Parse.Cloud.define("sendChatNotification", function (request, response) {
-//    getATestUser().then( function(theCurrentUser) {
+Parse.Cloud.define("sendChatNotification", function (request, response) {
+    
+    
+    
+    getATestUser().then( function(theCurrentUser) {
+        var Chat = Parse.Object.extend("Chat");
+        var gameScore = new Chat();
+
+        gameScore.set("chatRoom", "testing");
+        gameScore.set("chatText", "testing Chat texts");
+        gameScore.set("sender", theCurrentUser);
+        gameScore.set("receiver", theCurrentUser);
+
+gameScore.save(null, {
+  success: function(gameScore) {
+    // Execute any logic that should take place after the object is saved.
+    console.log('New object created with objectId: ' + gameScore.id);
+  },
+  error: function(gameScore, error) {
+    // Execute any logic that should take place if the save fails.
+    // error is a Parse.Error with an error code and message.
+    console.log('Failed to create new object, with error code: ' + error.message);
+  }
+});
+        
+        
+        
+        
 //        var message = "hi, i'm testing"
 //        var receiver = theCurrentUser;
 //        var sender = theCurrentUser;
 //        
 //        var notificationRepository = require("./pushNotifications.js");
 //        notificationRepository.sendChatNotification(receiver, sender, message);
-//    
-//    
-//    
-//    });
-//    
-//    
-//    
-//    
-//         
-//});
+    
+    
+    
+    });
+    
+    
+    
+    
+         
+});
 
 Parse.Cloud.afterSave("Chat", function(request) {
     var receiver = request.object.get("receiver");
