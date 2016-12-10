@@ -6,7 +6,7 @@ var ParseServer = require('parse-server').ParseServer;
 var path = require('path');
 
 var myConfiguration = function() {
-        var isProduction = false
+        var isProduction = true
         
         //Development database
         var masterKey = "ajdkdkfld6354758"
