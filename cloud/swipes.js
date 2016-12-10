@@ -209,12 +209,15 @@ function getAlreadySwipedUserObjectIds(currentUser) {
     var orQuery = Parse.Query.or(currentUserIsUserOneQuery, currentUserIsUserTwoQuery);
     orQuery.include("userOne");
     orQuery.include("userTwo");
+    orQuery.limit(10000);
     
     var promise = new Parse.Promise();
     
     orQuery.find({
         success: function(swipes) {
             var theAlreadySwipedUserObjectIds = []
+            console.log("printing swipes length");
+            console.log(swipes.length);
     
             for (var i = 0; i < swipes.length; i++) {
                 //append the otherUser to theUsers array
