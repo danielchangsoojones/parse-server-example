@@ -209,7 +209,7 @@ function getAlreadySwipedUserObjectIds(currentUser) {
     var orQuery = Parse.Query.or(currentUserIsUserOneQuery, currentUserIsUserTwoQuery);
     orQuery.include("userOne");
     orQuery.include("userTwo");
-    orQuery.limit(10000);
+    orQuery.limit(10000); //the default limit is 100, but we need to get all the users swipes. If they have over 10,000 swipes, then this would break and they would start seeing people theu have already swiped. 
     
     var promise = new Parse.Promise();
     

@@ -27,6 +27,68 @@ Parse.Cloud.define("getCurrentUserSwipes", function (request, response) {
     
 });
 
+
+
+
+
+
+
+
+Parse.Cloud.job("removeDuplicates", function(request, status) {
+    var _ = require("underscore");
+    
+    var hashTable = {};
+
+  function hashKeyForTestItem(testItem) {
+    var hashKey = "";
+            if (testItem.get("userOne") != null && testItem.get("userTwo") != null) {
+                hashKey += testItem.get("userOne").id + "/";
+                hashKey += testItem.get("userTwo").id + "/";
+      }
+      console.log(hashKey);
+    return hashKey;
+  }
+
+  var testItemsQuery = new Parse.Query("ParseSwipe");
+    testItemsQuery.limit(100000);
+    testItemsQuery.include("userOne");
+    testItemsQuery.include("userTwo");
+    
+    
+    testItemsQuery.find({
+        success: function(results) {
+            console.log("hii");
+            for (var i = 0; i < results.length; i++) {
+                var testItem = results[i];
+                
+                if (testItem.get("userOne") == null && testItem.get("userTwo") == null) {
+                    console.log("destroy the row because it is pointing to a null pointer( aka a deleted pointer)");
+                    return testItem.destroy();
+                } else {
+                    //they exist
+                    var key = hashKeyForTestItem(testItem);
+
+                    if (key in hashTable) { // this item was seen before, so destroy this
+                        return testItem.destroy();
+                    } else { // it is not in the hashTable, so keep it
+                        hashTable[key] = 1;
+                        }
+                    console.log("finished dealing with the hash key" + key);
+                }
+                
+                
+                
+
+            }
+
+    }
+    });
+
+});
+
+
+
+
 //Push notifications
 Parse.Cloud.define("sendMatchPushNotification", function (request, response) {
     var parseSwipeObjectId = request.params.parseSwipeObjectId;
@@ -73,26 +135,26 @@ Parse.Cloud.define("sendChatNotification", function (request, response) {
          
 });
 
-Parse.Cloud.afterSave("Chat", function(request) {
-    var receiver = request.object.get("receiver");
-    var message = request.object.get("chatText");
-    var sender = request.object.get("sender");
-    
-    console.log(receiver);
-    
-    var notificationRepository = require("./pushNotifications.js");
-    notificationRepository.sendChatNotification(receiver, sender, message);
-});
-
-Parse.Cloud.afterSave("ParseUserTag", function(request) {
-    var userForTag = request.object.get("user");
-    var tagTitle = request.object.get("tagTitle");
-    var createdBy = request.object.get("createdBy");
-    
-    var notificationRepository = require("./pushNotifications.js");
-    notificationRepository.sendAddedTagNotification(userForTag, tagTitle, createdBy);
-});
-    
+//Parse.Cloud.afterSave("Chat", function(request) {
+//    var receiver = request.object.get("receiver");
+//    var message = request.object.get("chatText");
+//    var sender = request.object.get("sender");
+//    
+//    console.log(receiver);
+//    
+//    var notificationRepository = require("./pushNotifications.js");
+//    notificationRepository.sendChatNotification(receiver, sender, message);
+//});
+//
+//Parse.Cloud.afterSave("ParseUserTag", function(request) {
+//    var userForTag = request.object.get("user");
+//    var tagTitle = request.object.get("tagTitle");
+//    var createdBy = request.object.get("createdBy");
+//    
+//    var notificationRepository = require("./pushNotifications.js");
+//    notificationRepository.sendAddedTagNotification(userForTag, tagTitle, createdBy);
+//});
+//    
 
 //USE THIS WHEN TESTING TO GET A CURRENT USER
 function getATestUser() {
