@@ -63,13 +63,15 @@ Parse.Cloud.job("removeDuplicates", function(request, status) {
                 
                 if (testItem.get("userOne") == null && testItem.get("userTwo") == null) {
                     console.log("destroy the row because it is pointing to a null pointer( aka a deleted pointer)");
-                    return testItem.destroy();
+                    
+                    testItem.destroy();
                 } else {
                     //they exist
                     var key = hashKeyForTestItem(testItem);
 
                     if (key in hashTable) { // this item was seen before, so destroy this
-                        return testItem.destroy();
+                        console.log("destroy the item because already found");
+                        testItem.destroy();
                     } else { // it is not in the hashTable, so keep it
                         hashTable[key] = 1;
                         }
