@@ -48,7 +48,5 @@ process.nextTick(function () {
 //                    }
 //    });
     
-    Parse.Cloud.runJob("removeDuplicates");
-    
 
 });
