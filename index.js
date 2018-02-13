@@ -37,6 +37,7 @@ var api = new ParseServer({
     
     //MARK: Development Database
     masterKey: process.env.MASTER_KEY || myConfiguration().masterKey, //Add your master key here. Keep it secret!
+    readOnlyMasterKey: "hi",
   serverURL: process.env.SERVER_URL || myConfiguration().serverURL, // Don't forget to change to https if needed
         // here the configuration for email begins
     
